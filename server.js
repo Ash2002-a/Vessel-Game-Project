@@ -67,7 +67,7 @@ const vesselCsvWriter = createCsvWriter({
 
 // Route to serve the game
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html', 'about.html', 'consent.html', 'feedback.html', 'Home.html'));
 });
 
 // API endpoint to save cursor data
