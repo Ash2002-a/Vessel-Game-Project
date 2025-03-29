@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+
+  <h2>{% block title %}Consent Form{% endblock title %}</h2>
+  <h2>Before playing, please fill out our consent form. </h2>
+
+{% endblock header %}
+
+
+{% block content %}
+
+<html>
+	
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+</head>
+
+<body lang="en-GB" link="#000080" vlink="#800000" dir="ltr"><p style="line-height: 100%; margin-bottom: 0cm">
+<img src="/static/assets/images/UCLbanner.png" name="Picture 2" align="bottom" width="903" height="173" border="0"/>
+</p>
+
+<p style="line-height: 100%; margin-bottom: 0cm"><font color="#000000"><font face="Arial, serif"><font size="2" style="font-size: 10pt">
+Please read and understand the <u><a href="{{ url_for('pages.about') }}">information sheet</a></u> before filling in this form. <br/><br/>
+
+<b>Title of Study: </b>
+A serious game to study the effect of limited field of view in keyhole surgery. <br/>
+<b> Department: </b>
+UCL Medical Physics and Biomedical Engineering <br/>
+<u> <b>Researcher(s)</b> </u> <br/>
+Connor Creasey - <a href="mailto:rmaphcr@ucl.ac.uk"><u> : rmaphcr@ucl.ac.uk</u></a>  <br/>
+Stephen Thompson - <a href="mailto:s.thompson@ucl.ac.uk"><u> : s.thompson@ucl.ac.uk</u></a> <br/>
+<u><b>Principal Researcher </b></u><br/> 
+Matthew J. Clarkson <a href="mailto:m.clarkson@ucl.ac.uk"><u> : m.clarkson@ucl.ac.uk</u></a> – contact with any issues. <br/>
+<u><b>UCL Data Protection Officer: </b></u><br/> Spenser Crouch <a href="mailto:data-protection@ucl.ac.uk"> <u>data-protection@ucl.ac.uk</u></a><br/><br/>
+
+This study has been approved by the UCL Research Ethics Committee: Project
+ID number: <b>24249/005</b></br></br>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0cm"><font color="#000000"><font face="Arial, serif"><font size="2" style="font-size: 10pt">Thank
+you for considering taking part in this research. If you have any
+questions arising from the Information Sheet, please contact the
+Principal Researcher.</font></font></font></p>
+<p style="line-height: 100%; margin-bottom: 0cm"><br/>
+
+</p>
+<p style="line-height: 100%; margin-bottom: 0cm"><font color="#000000"><font face="Arial, serif"><font size="2" style="font-size: 10pt">
+By ticking the box below, you are consenting to all elements of the study outlined in the following list. Without giving consent, you will 
+be unable to play the game.</p> <br/>
+
+<center>
+	
+	<ol>
+	
+	<li> I confirm that I have read and understood the Information Sheet for
+				the above study. I have had an opportunity to consider the
+				information and understand what will be expected of me, and that
+				if I had any questions they have been answered to my
+				satisfaction.  </li> <br/>
+	
+	<li> I understand that data will be anonymised, and that it will not be
+				possible to link my personal data (consent, contact details) with
+				the study data. I understand that according to data protection
+				legislation, ‘task in the public interest’ will be the lawful
+				basis for processing.</li> <br/>
+	
+	<li> I understand that all personal information will remain
+				confidential, and that all efforts will be made to ensure I
+				cannot be identified. Data gathered in this study will be stored anonymously. 
+				It will not be possible to identify me in any publications. </li> <br/>
+	
+	<li> I understand that I will not be able to withdraw from the study
+				after the point of data collection. This is due to the data being anonymous. </li> <br/>
+	
+	<li> I understand that my information may be subject to review by
+				responsible individuals from the University for monitoring and
+				audit purposes. </li> <br/>
+	
+	<li> I	understand that I will not benefit financially from this study or
+		from any possible outcome it may result in in the future. </li> <br/>
+	
+	<li> I understand that I will not be compensated for the portion of time
+				spent in the study if I choose to withdraw.</li> <br/>
+	
+	<li> I agree that my anonymised research data may be used by others for
+				future research. No one will be able to identify you when this data is shared. </li> <br/>
+	
+	<li> I understand that the information I have submitted will be
+				published as a report, which
+				the researchers involved will make available upon request.</li> <br/>
+	
+	<li> I am aware of who I should contact if I wish to lodge a complaint. </li> <br/>
+	
+	</ol>
+	
+</center>
+
+<b><i>I confirm that I understand the above conditions and wish to participate: </b> </i> <input type="checkbox" id="consentCheck" onclick="consentCheck()"><br/>
+
+<a id = "consentText" style = "display:none" href="{{ url_for('pages.game') }}">Play the blood vessel game!</a>
+
+</p>
+
+	<script>
+	function consentCheck() {
+	// Get the checkbox
+	var checkBox = document.getElementById("consentCheck");
+	// Get the output text
+	var text = document.getElementById("consentText");
+
+	// If the checkbox is checked, display the output text
+	if (checkBox.checked == true){
+		text.style.display = "block";
+		window.scrollTo(0,document.body.scrollHeight)
+	} else {
+		text.style.display = "none";
+	}
+	} 
+	</script>
+
+</body>
+</html>
+
+
+
+{% endblock content %}

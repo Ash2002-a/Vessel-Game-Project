@@ -1,0 +1,551 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+
+  <h2>{% block title %}Feedback{% endblock title %}</h2>
+
+{% endblock header %}
+
+
+{% block content %}
+ 
+<html>
+
+<p>Thank you for playing!</p>
+
+<p> On this page, you can leave some feedback about the game. Answer the below questions and then press "submit" at the bottom of the page. <br/>
+If you have any further thoughts, please find our contact details in the <a href="{{ url_for('pages.about') }}">"about"</a> section. <br>
+You are not required to answer everything. </p>
+
+<br>
+<br>
+<b>Laparoscopy questions</b>
+<br>
+<br>
+
+<form action="{{ url_for('dbfeedback')}}" method="post">
+	
+	<fieldset>
+		<legend> Do you play video games regularly? </legend>
+		<div>
+			<input type="radio" id="GamerYes" name="GamerGroup" value="Yes" />
+			<label for="LaparoFieldYes">Yes</label>
+
+			<input type="radio" id="GamerNo" name="GamerGroup" value="No" />
+			<label for="LaparoFieldNo">No</label>
+		</div>
+	</fieldset>
+
+<br>
+	
+	<fieldset>
+		<legend> What do you know about laparoscopic (keyhole) surgery? </legend>
+		<div>
+			 <textarea id = "LaparoKnowledge" name = "LaparoWhatKnow" rows="4" cols="100" maxlength = "500"></textarea>
+		</div>
+	</fieldset>
+
+<br>
+
+  <fieldset>
+    <legend>Do you have an understanding of how the field of view might affect laparoscopic surgery?</legend>
+    <div>
+		
+      <input type="radio" id="LaparoFieldYes" name="LaparoKnowledgeGroup" value="Yes" />
+      <label for="LaparoFieldYes">Yes</label>
+
+      <input type="radio" id="LaparoFieldNo" name="LaparoKnowledgeGroup" value="No" />
+      <label for="LaparoFieldNo">No</label>
+
+    </div>
+  </fieldset>
+
+<br>
+
+  <fieldset>
+    <legend>Did playing this game enhance your understanding of limited field of view in endoscopic surgery?</legend>
+    <div>
+		
+      <input type="radio" id="LaparoEnhanceYes" name="LaparoEnhanceGroup" value="Yes" />
+      <label for="LaparoEnhanceYes">Yes</label>
+
+      <input type="radio" id="LaparoEnhanceNo" name="LaparoEnhanceGroup" value="No" />
+      <label for="LaparoEnhanceNo">No</label>
+
+    </div>
+  </fieldset>
+ 
+<br>
+ 
+  <fieldset>
+    <legend>Did you think the game was clinically relevant?</legend>
+    <div>
+		
+      <input type="radio" id="LaparoRelevantYes" name="LaparRelevantGroup" value="Yes" />
+      <label for="LaparoRelevantYes">Yes</label>
+
+      <input type="radio" id="LaparoRelevantNo" name="LaparoRelevantGroup" value="No" />
+      <label for="LaparoRelevantNo">No</label>
+
+    </div>
+  </fieldset>
+ 
+<br>
+ 
+  <fieldset>
+    <legend>Do you think the difficulty level was reasonable?</legend>
+    <div>
+		
+      <input type="radio" id="LaparoDifficultyYes" name="LaparoDifficultyGroup" value="Yes" />
+      <label for="LaparoDifficultyYes">Yes</label>
+
+      <input type="radio" id="LaparoDifficultyNo" name="LaparoDifficultyGroup" value="No" />
+      <label for="LaparoDifficultyNo">No</label>
+
+    </div>
+  </fieldset>
+
+<br>
+
+  <fieldset>
+    <legend>Did you find the game engaging?</legend>
+    <div>
+		
+      <input type="radio" id="LaparoEngagingYes" name="LaparoEngagingGroup" value="Yes" />
+      <label for="LaparoEngagingYes">Yes</label>
+
+      <input type="radio" id="LaparoDifficultyNo" name="LaparoDifficultyGroup" value="No" />
+      <label for="LaparoEngagingNo">No</label>
+
+    </div>
+  </fieldset>
+
+<br>
+
+  <fieldset>
+    <legend>Did you find the game layout visually pleasing?</legend>
+    <div>
+		
+      <input type="radio" id="LaparoPleasingYes" name="LaparoPleasingGroup" value="Yes" />
+      <label for="LaparoPleasingYes">Yes</label>
+
+      <input type="radio" id="LaparoPleasingNo" name="LaparoPleasingGroup" value="No" />
+      <label for="LaparoPleasingNo">No</label>
+
+    </div>
+  </fieldset>
+  
+	<fieldset>
+		<legend> Do you have any other comments about the game? </legend>
+		<div>
+			 <textarea id = "LaparoFreeFeedback" name = "LaparoFreeGroup" rows="4" cols="100" maxlength = "500"></textarea>
+		</div>
+	</fieldset>
+
+<br>
+<br>
+
+<b>System Usability Scale (SUS)</b>
+Please answer each question from 1(strongly disagree) to 5(strongly agree).
+
+<br>
+<br>
+
+  <fieldset>
+    <legend>I think that I would like to use this system frequently.</legend>
+    <div>
+		
+      <input type="radio" id="SusQ1_1" name="SusQ1Group" value=1 />
+      <label for="SusQ1_1">1</label>
+
+      <input type="radio" id="SusQ1_2" name="SusQ1Group" value=2 />
+      <label for="SusQ1_2">2</label>
+
+	  <input type="radio" id="SusQ1_3" name= "SusQ1Group" value=3 />
+      <label for="SusQ1_3">3</label>
+      
+      <input type="radio" id="SusQ1_4" name= "SusQ1Group" value=4 />
+      <label for="SusQ1_4">4</label>
+      
+      <input type="radio" id="SusQ1_5" name= "SusQ1Group" value=5 />
+      <label for="SusQ1_5">5</label>
+
+    </div>
+  </fieldset>
+ 
+<br>
+ 
+  <fieldset>
+    <legend>I found the system unnecessarily complex.</legend>
+    <div>
+		
+      <input type="radio" id="SusQ2_1" name="SusQ2Group" value=1 />
+      <label for="SusQ2_1">1</label>
+
+      <input type="radio" id="SusQ2_2" name="SusQ2Group" value=2 />
+      <label for="SusQ2_2">2</label>
+
+	  <input type="radio" id="SusQ2_3" name= "SusQ2Group" value=3 />
+      <label for="SusQ2_3">3</label>
+      
+      <input type="radio" id="SusQ2_4" name= "SusQ2Group" value=4 />
+      <label for="SusQ2_4">4</label>
+      
+      <input type="radio" id="SusQ2_5" name= "SusQ2Group" value=5 />
+      <label for="SusQ2_5">5</label>
+
+    </div>
+  </fieldset>
+
+<br>
+  
+  <fieldset>
+    <legend>I thought the system was easy to use.</legend>
+    <div>
+		
+      <input type="radio" id="SusQ3_1" name="SusQ3Group" value=1 />
+      <label for="SusQ3_1">1</label>
+
+      <input type="radio" id="SusQ3_2" name="SusQ3Group" value=2 />
+      <label for="SusQ3_2">2</label>
+
+	  <input type="radio" id="SusQ3_3" name= "SusQ3Group" value=3 />
+      <label for="SusQ3_3">3</label>
+      
+      <input type="radio" id="SusQ3_4" name= "SusQ3Group" value=4 />
+      <label for="SusQ3_4">4</label>
+      
+      <input type="radio" id="SusQ3_5" name= "SusQ3Group" value=5 />
+      <label for="SusQ3_5">5</label>
+ 
+    </div>
+  </fieldset>
+
+<br>
+ 
+  <fieldset>
+    <legend>I think that I would need thesupport of a technical person to be able to use this system.</legend>
+    <div>
+		
+      <input type="radio" id="SusQ4_1" name= "SusQ4Group" value=1 />
+      <label for="SusQ4_1">1</label>
+
+      <input type="radio" id="SusQ4_2" name= "SusQ4Group" value=2 />
+      <label for="SusQ4_2">2</label>
+
+	  <input type="radio" id="SusQ4_3" name= "SusQ4Group" value=3 />
+      <label for="SusQ4_3">3</label>
+      
+      <input type="radio" id="SusQ4_4" name= "SusQ4Group" value=4 />
+      <label for="SusQ4_4">4</label>
+      
+      <input type="radio" id="SusQ4_5" name= "SusQ4Group" value=5 />
+      <label for="SusQ4_5">5</label>
+ 
+    </div>
+  </fieldset>
+  
+<br> 
+
+  <fieldset>
+    <legend>I found the various functions in this system were well integrated.</legend>
+    <div>
+		
+      <input type="radio" id="SusQ5_1" name= "SusQ5Group" value=1 />
+      <label for="SusQ5_1">1</label>
+
+      <input type="radio" id="SusQ5_2" name= "SusQ5Group" value=2 />
+      <label for="SusQ5_2">2</label>
+
+	  <input type="radio" id="SusQ5_3" name= "SusQ5Group" value=3 />
+      <label for="SusQ5_3">3</label>
+      
+      <input type="radio" id="SusQ5_4" name= "SusQ5Group" value=4 />
+      <label for="SusQ5_4">4</label>
+      
+      <input type="radio" id="SusQ5_5" name= "SusQ5Group" value=5 />
+      <label for="SusQ5_5">5</label>
+ 
+    </div>
+  </fieldset>
+
+<br>
+
+  <fieldset>
+    <legend>I thought there was too much inconsistency in the system.</legend>
+    <div>
+		
+      <input type="radio" id="SusQ6_1" name= "SusQ6Group" value=1 />
+      <label for="SusQ6_1">1</label>
+
+      <input type="radio" id="SusQ6_2" name= "SusQ6Group" value=2 />
+      <label for="SusQ6_2">2</label>
+
+	  <input type="radio" id="SusQ6_3" name= "SusQ6Group" value=3 />
+      <label for="SusQ6_3">3</label>
+      
+      <input type="radio" id="SusQ6_4" name= "SusQ6Group" value=4 />
+      <label for="SusQ6_4">4</label>
+      
+      <input type="radio" id="SusQ6_5" name= "SusQ6Group" value=5 />
+      <label for="SusQ6_5">5</label>
+ 
+    </div>
+  </fieldset>
+
+<br>
+
+  <fieldset>
+    <legend> I would imagine that most people would learn to use this system very quickly.</legend>
+    <div>
+		
+      <input type="radio" id="SusQ7_1" name= "SusQ7Group" value=1 />
+      <label for="SusQ7_1">1</label>
+
+      <input type="radio" id="SusQ7_2" name= "SusQ7Group" value=2 />
+      <label for="SusQ7_2">2</label>
+
+	  <input type="radio" id="SusQ7_3" name= "SusQ7Group" value=3 />
+      <label for="SusQ7_3">3</label>
+      
+      <input type="radio" id="SusQ7_4" name= "SusQ7Group" value=4 />
+      <label for="SusQ7_4">4</label>
+      
+      <input type="radio" id="SusQ7_5" name= "SusQ7Group" value=5 />
+      <label for="SusQ7_5">5</label>
+ 
+    </div>
+  </fieldset>
+
+<br>
+
+  <fieldset>
+    <legend> I found the system very cumbersome to use.</legend>
+    <div>
+		
+      <input type="radio" id="SusQ8_1" name= "SusQ8Group" value=1 />
+      <label for="SusQ8_1">1</label>
+
+      <input type="radio" id="SusQ8_2" name= "SusQ8Group" value=2 />
+      <label for="SusQ8_2">2</label>
+
+	  <input type="radio" id="SusQ8_3" name= "SusQ8Group" value=3 />
+      <label for="SusQ8_3">3</label>
+      
+      <input type="radio" id="SusQ8_4" name= "SusQ8Group" value=4 />
+      <label for="SusQ8_4">4</label>
+      
+      <input type="radio" id="SusQ8_5" name= "SusQ8Group" value=5 />
+      <label for="SusQ8_5">5</label>
+ 
+    </div>
+  </fieldset>
+
+<br>
+
+   <fieldset>
+    <legend>  I felt very confident using the system.</legend>
+    <div>
+		
+      <input type="radio" id="SusQ9_1" name= "SusQ9Group" value=1 />
+      <label for="SusQ9_1">1</label>
+
+      <input type="radio" id="SusQ9_2" name= "SusQ9Group" value=2 />
+      <label for="SusQ9_2">2</label>
+
+	  <input type="radio" id="SusQ9_3" name= "SusQ9Group" value=3 />
+      <label for="SusQ9_3">3</label>
+      
+      <input type="radio" id="SusQ9_4" name= "SusQ9Group" value=4 />
+      <label for="SusQ9_4">4</label>
+      
+      <input type="radio" id="SusQ9_5" name= "SusQ9Group" value=5 />
+      <label for="SusQ9_5">5</label>
+ 
+    </div>
+  </fieldset>
+
+<br>
+
+  <fieldset>
+    <legend>  I needed to learn a lot of things before I could get going with this system.</legend>
+    <div>
+		
+      <input type="radio" id="SusQ10_1" name= "SusQ10Group" value=1 />
+      <label for="SusQ10_1">1</label>
+
+      <input type="radio" id="SusQ10_2" name= "SusQ10Group" value=2 />
+      <label for="SusQ10_2">2</label>
+
+	  <input type="radio" id="SusQ10_3" name= "SusQ10Group" value=3 />
+      <label for="SusQ10_3">3</label>
+      
+      <input type="radio" id="SusQ10_4" name= "SusQ10Group" value=4 />
+      <label for="SusQ10_4">4</label>
+      
+      <input type="radio" id="SusQ10_5" name= "SusQ10Group" value=5 />
+      <label for="SusQ10_5">5</label>
+ 
+    </div>
+  </fieldset>
+
+<br> 
+
+<br>
+<b>NASA task load index (TLX)</b><br>
+Please answer on a scale of 1("Not at all") to 5("Very")
+<br>
+<br>
+
+ <fieldset>
+    <legend>  Mental demand: How mentally demanding was the task? </legend>
+    <div>
+		
+      <input type="radio" id="TlxQ1_1" name= "TlxQ1Group" value=1 />
+      <label for="TlxQ1_1">1</label>
+
+      <input type="radio" id="TlxQ1_2" name= "TlxQ1Group" value=2 />
+      <label for="TlxQ1_2">2</label>
+
+	  <input type="radio" id="TlxQ1_3" name= "TlxQ1Group" value=3 />
+      <label for="TlxQ1_3">3</label>
+      
+      <input type="radio" id="TlxQ1_4" name= "TlxQ1Group" value=4 />
+      <label for="TlxQ1_4">4</label>
+      
+      <input type="radio" id="TlxQ1_5" name= "TlxQ1Group" value=5 />
+      <label for="TlxQ1_5">5</label>
+ 
+    </div>
+  </fieldset>
+
+<br>
+  
+  <fieldset>
+    <legend>  Physical demand: How physically demanding was the task? </legend>
+    <div>
+		
+      <input type="radio" id="TlxQ2_1" name= "TlxQ2Group" value=1 />
+      <label for="TlxQ2_1">1</label>
+
+      <input type="radio" id="TlxQ2_2" name= "TlxQ2Group" value=2 />
+      <label for="TlxQ2_2">2</label>
+
+	  <input type="radio" id="TlxQ2_3" name= "TlxQ2Group" value=3 />
+      <label for="TlxQ2_3">3</label>
+      
+      <input type="radio" id="TlxQ2_4" name= "TlxQ2Group" value=4 />
+      <label for="TlxQ2_4">4</label>
+      
+      <input type="radio" id="TlxQ2_5" name= "TlxQ2Group" value=5 />
+      <label for="TlxQ2_5">5</label>
+ 
+    </div>
+  </fieldset>
+
+<br>
+
+  <fieldset>
+    <legend>  Temporal Demand: How hurried or rushed was the pace of the task? </legend>
+    <div>
+		
+      <input type="radio" id="TlxQ3_1" name= "TlxQ3Group" value=1 />
+      <label for="TlxQ3_1">1</label>
+
+      <input type="radio" id="TlxQ3_2" name= "TlxQ3Group" value=2 />
+      <label for="TlxQ3_2">2</label>
+
+	  <input type="radio" id="TlxQ3_3" name= "TlxQ3Group" value=3 />
+      <label for="TlxQ3_3">3</label>
+      
+      <input type="radio" id="TlxQ3_4" name= "TlxQ3Group" value=4 />
+      <label for="TlxQ3_4">4</label>
+      
+      <input type="radio" id="TlxQ3_5" name= "TlxQ3Group" value=5 />
+      <label for="TlxQ3_5">5</label>
+ 
+    </div>
+  </fieldset>
+
+<br>
+
+ <fieldset>
+    <legend>  Performance: How successful were you at what you were trying to do? </legend>
+    <div>
+		
+      <input type="radio" id="TlxQ4_1" name= "TlxQ4Group" value=1 />
+      <label for="TlxQ4_1">1</label>
+
+      <input type="radio" id="TlxQ4_2" name= "TlxQ4Group" value=2 />
+      <label for="TlxQ4_2">2</label>
+
+	  <input type="radio" id="TlxQ4_3" name= "TlxQ4Group" value=3 />
+      <label for="TlxQ4_3">3</label>
+      
+      <input type="radio" id="TlxQ4_4" name= "TlxQ4Group" value=4 />
+      <label for="TlxQ4_4">4</label>
+      
+      <input type="radio" id="TlxQ4_5" name= "TlxQ4Group" value=5 />
+      <label for="TlxQ4_5">5</label>
+ 
+    </div>
+  </fieldset>
+  
+<br>
+  
+  <fieldset>
+    <legend>  Effort: How hard did you have to work to accomplish your level of performance? </legend>
+    <div>
+		
+      <input type="radio" id="TlxQ5_1" name= "TlxQ5Group" value=1 />
+      <label for="TlxQ5_1">1</label>
+
+      <input type="radio" id="TlxQ5_2" name= "TlxQ5Group" value=2 />
+      <label for="TlxQ5_2">2</label>
+
+	  <input type="radio" id="TlxQ5_3" name= "TlxQ5Group" value=3 />
+      <label for="TlxQ5_3">3</label>
+      
+      <input type="radio" id="TlxQ5_4" name= "TlxQ5Group" value=4 />
+      <label for="TlxQ5_4">4</label>
+      
+      <input type="radio" id="TlxQ5_5" name= "TlxQ5Group" value=5 />
+      <label for="TlxQ5_5">5</label>
+ 
+    </div>
+  </fieldset>
+  
+<br>
+  
+  <fieldset>
+    <legend>  Frustration: How insecure, discouraged, irritated, stressed and annoyed were you? </legend>
+    <div>
+		
+      <input type="radio" id="TlxQ6_1" name= "TlxQ6Group" value=1 />
+      <label for="TlxQ6_1">1</label>
+
+      <input type="radio" id="TlxQ6_2" name= "TlxQ6Group" value=2 />
+      <label for="TlxQ6_2">2</label>
+
+	  <input type="radio" id="TlxQ6_3" name= "TlxQ6Group" value=3 />
+      <label for="TlxQ6_3">3</label>
+      
+      <input type="radio" id="TlxQ6_4" name= "TlxQ6Group" value=4 />
+      <label for="TlxQ6_4">4</label>
+      
+      <input type="radio" id="TlxQ6_5" name= "TlxQ6Group" value=5 />
+      <label for="TlxQ6_5">5</label>
+ 
+    </div>
+  </fieldset>
+
+<input type="submit" value="Submit answers">
+
+</form>
+<br>
+
+	
+</html>
+	
+{% endblock content %}

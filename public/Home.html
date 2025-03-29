@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+
+{% block header %}
+
+  <h2>{% block title %}A serious game to study the effect of limited field of view in keyhole surgery{% endblock title %}</h2>
+
+{% endblock header %}
+
+
+{% block content %}
+
+	<p>
+	
+	Welcome to the blood vessel game. The game challenges you to complete a simple cutting task as many times as possible in 60 seconds.
+	We gather anonymous data to test whether how much you can see affects your performance. By participating in the game you will
+	contribute to making keyhole surgery safer and faster, and hopefully you will also have some fun. You may play the game as often
+	as you like. Click the "about" button for more information, or "Play the Game" to get started. If you can't work out how to play,
+	click "how to play" for some instructions.
+	
+	</p>
+	
+
+  <p>
+
+    Learn more about this project by visiting the <a href="{{ url_for('pages.about') }}">About page</a>.
+
+  </p>
+
+{% endblock content %}
