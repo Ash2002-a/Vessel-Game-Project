@@ -1,105 +1,109 @@
-# Vessel Game
+### Research Question
+A Serious Game to Study the Effect of Limited Field of View in Keyhole Surgery.
 
-## Setup & Installation
+## Project Overview
+This project investigates the effects of limited field of view in keyhole surgery through a serious game approach. The game simulates surgical scenarios where players must navigate and perform tasks with varying levels of visual field constraints.
 
-Follow these steps to set up and run the **Vessel Game** application.
+### Research Objectives
+1. **Instrument Efficiency**: Measure how efficiently instruments are used based on total movement
+2. **Task Completion Time**: Analyse how quickly tasks are completed
+3. **Peripheral Awareness**: Assess how well surgeons notice important events outside their main focus
+4. **Distraction Impact**: Study how distractions affect focus and errors
 
-### **1. Install Node.js and npm**
-Ensure you have **Node.js** and **npm** installed. You can verify this by running:
+## Data Collection and Analysis Pipeline
 
-```sh
-node -v
-npm -v
-```
+### 1. Gameplay Data Collection
+- Users play the Vessel Game
+- Game data is automatically collected and stored in Google Sheets
+- Data Spreadsheet: [Vessel Game Data](https://docs.google.com/spreadsheets/d/11iMJu3nDiwrV7bMak1cxVl-_bZSjJJn0kwjxF1cHwSM/edit?usp=sharing)
 
-If not installed, download and install Node.js from [nodejs.org](https://nodejs.org/).
+### 2. Data Processing
+1. Run AppScript to export all data from Google Sheets to Google Drive
+2. Download the generated ZIP folder containing all user data
 
----
-### **2. Install Dependencies**
-Run the following command in the project root directory (where `package.json` is located):
+### 3. Data Analysis
+Two analysis tools are provided:
 
-```sh
-npm install
-```
+#### Individual Analysis (user.py)
+- Run `streamlit run streamlit/user.py`
+- Enter your UUID to view personalised analytics
+- Features:
+  - Performance metrics
+  - Movement patterns
+  - Distraction analysis
+  - Level progression
 
-This installs all required dependencies.
+#### Admin Analysis (admin.py)
+- Run `streamlit run streamlit/admin.py`
+- Upload the ZIP folder containing all user data
+- Features:
+  - Aggregate statistics
+  - Comparative analysis
+  - Research insights
+  - Data visualisation
 
----
-### **3. Set Up Python Virtual Environment (Preinstall Script)**
-Since the **preinstall script** sets up a Python environment inside the `analytic/` directory, ensure Python 3 is installed.
+## Technical Requirements
 
-Manually set up the virtual environment by running:
+### Prerequisites
+- Python 3.8+
+- Node.js (for local development)
+- Visual Studio Code (recommended)
+- Web browser with JavaScript enabled
+- Git (for version control)
 
-#### **For Mac/Linux**:
-```sh
-cd analytic
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-cd ..
-```
+### Installation
 
-#### **For Windows**:
-```sh
-cd analytic
-python3 -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
-cd ..
-```
+#### 1. Game Setup
+1. Install Visual Studio Code
+2. Install the "Live Server" extension in VS Code:
+   - Open VS Code
+   - Go to Extensions (Ctrl+Shift+X or Cmd+Shift+X)
+   - Search for "Live Server"
+   - Install the extension by Ritwick Dey
 
-(The preinstall script should do this automatically, but you can manually verify it.)
+#### 2. Python Environment Setup
+1. Create and activate a virtual environment:
+   ```bash
+   # Create virtual environment
+   python -m venv venv
 
----
-### **4. Start the Server**
-Run the following command to start the Express server (`server.js`):
+   # Activate virtual environment
+   # On Windows:
+   venv\Scripts\activate
+   # On macOS/Linux:
+   source venv/bin/activate
+   ```
 
-```sh
-npm start
-```
+2. Install Python dependencies:
+   ```bash
+   cd streamlit
+   pip install -r requirements.txt
+   ```
 
-The server should now be running at `http://localhost:3000`.
+#### 3. Running the Game
+1. Open the project in VS Code
+2. Right-click on `index.html`
+3. Select "Open with Live Server"
+4. The game will open in your default web browser at `http://localhost:5500`
 
----
-### **5. Running the Analytics Script (Optional)**
-To manually execute the Python analytics script:
+### Running the Analysis Tools
+1. For individual analysis:
+   ```bash
+   streamlit run streamlit/user.py
+   ```
 
-```sh
-npm run analytic
-```
+2. For admin analysis:
+   ```bash
+   streamlit run streamlit/admin.py
+   ```
 
-This runs `main.py` inside the `analytic/` directory while activating the virtual environment.
+## Data Structure
+The game collects the following data types:
+- Mouse tracking data
+- Vessel creation and cutting events
+- Distraction events
+- Performance metrics
+- Level progression
 
----
-## **Troubleshooting**
 
-### **Permission Errors on Linux/Mac**
-If you get a permission error, try:
-```sh
-chmod +x analytic/venv/bin/activate
-```
 
-### **Server Fails to Start**
-If `npm start` fails, check if `server.js` is properly configured to run an Express app.
-
-### **Dependency Issues**
-If `npm install` doesn’t work, delete `package-lock.json` and `node_modules/`, then reinstall:
-
-```sh
-rm -rf node_modules package-lock.json
-npm install
-```
-
----
-
-### **Project Structure**
-```
-📂 vessel-game
- ┣ 📂 analytic       # Python scripts for data analysis
- ┣ 📂 data           # Stores game-related data
- ┣ 📂 node_modules   # Dependencies (auto-installed)
- ┣ 📂 public         # Static assets (images, styles, etc.)
- ┣ 📜 README.md      # Project documentation
- ┣ 📜 package.json   # Project config and dependencies
- ┣ 📜 server.js      # Main Node.js server
-```

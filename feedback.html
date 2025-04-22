@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback | Blood Vessel Cutting Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script>
+        // Generate or retrieve a UUID
+        function getOrCreateUUID() {
+            let uuid = localStorage.getItem('vessel_game_uuid');
+
+            if (!uuid) {
+                // Generate a new UUID
+                uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+
+                // Store it in localStorage
+                localStorage.setItem('vessel_game_uuid', uuid);
+            }
+
+            return uuid;
+        }
+
+        // Initialize UUID on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            // Ensure UUID exists
+            getOrCreateUUID();
+            console.log("Feedback form initialized with UUID:", localStorage.getItem('vessel_game_uuid'));
+        });
+    </script>
+</head>
+
+<body class="bg-gradient-to-b from-blue-100 to-blue-200 min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-blue-600 shadow-md">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex items-center justify-center h-16 space-x-8">
+                <a class="text-white hover:text-blue-100 font-medium text-lg transition duration-200"
+                    href="./index.html">Home</a>
+                <a class="text-white hover:text-blue-100 font-medium text-lg transition duration-200"
+                    href="./about.html">About</a>
+                <a class="text-white hover:text-blue-100 font-medium text-lg transition duration-200"
+                    href="./game.html">Play Game</a>
+                <a class="text-white hover:text-blue-100 font-medium text-lg transition duration-200 border-b-2 border-white"
+                    href="./feedback.html">Feedback</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <!-- Main Content Container -->
+        <div class="bg-white rounded-lg shadow-xl overflow-hidden mb-8">
+            <!-- Header -->
+            <div class="text-center py-6 bg-blue-800">
+                <h1 class="text-3xl font-bold text-white">Laparoscopy Game Feedback</h1>
+            </div>
+
+            <div class="p-8">
+                <form id="feedbackForm" class="space-y-8" data-ratufa-form>
+                    <p class="text-gray-700 mb-6">
+                        Thank you for playing! On this page, you can leave some feedback about the game.
+                        Answer the questions below and then press "Submit" at the bottom of the page.
+                        If you have any further thoughts, please find our contact details in the "About" section.
+                        <span class="text-red-500 font-semibold">All fields are required.</span>
+                    </p>
+
+                    <h2 class="text-2xl font-semibold text-blue-600 mt-8 pb-2 border-b border-gray-300">
+                        Laparoscopy Questions <span class="text-red-500">*</span>
+                    </h2>
+
+                    <!-- Game Play Question -->
+                    <div class="mb-6">
+                        <div class="font-semibold mb-2 text-gray-800">Do you play video games regularly? <span
+                                class="text-red-500">*</span></div>
+                        <div class="flex space-x-6">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="playGames" value="Yes" class="form-radio text-blue-600"
+                                    required>
+                                <span class="ml-2 text-gray-700">Yes</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="playGames" value="No" class="form-radio text-blue-600">
+                                <span class="ml-2 text-gray-700">No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Laparoscopic Knowledge -->
+                    <div class="mb-6">
+                        <label for="laparoscopicKnowledge" class="block font-semibold mb-2 text-gray-800">
+                            What do you know about laparoscopic (keyhole) surgery? <span class="text-red-500">*</span>
+                        </label>
+                        <textarea id="laparoscopicKnowledge" name="laparoscopicKnowledge" required
+                            class="w-full p-3 border border-gray-300 rounded-md min-h-24 resize-y focus:border-blue-500 focus:ring-1 focus:ring-blue-500"></textarea>
+                    </div>
+
+                    <!-- Field of View Understanding -->
+                    <div class="mb-6">
+                        <div class="font-semibold mb-2 text-gray-800">
+                            Do you have an understanding of how the field of view might affect laparoscopic surgery?
+                            <span class="text-red-500">*</span>
+                        </div>
+                        <div class="flex space-x-6">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="fieldOfViewUnderstanding" value="Yes"
+                                    class="form-radio text-blue-600" required>
+                                <span class="ml-2 text-gray-700">Yes</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="fieldOfViewUnderstanding" value="No"
+                                    class="form-radio text-blue-600">
+                                <span class="ml-2 text-gray-700">No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Enhanced Understanding -->
+                    <div class="mb-6">
+                        <div class="font-semibold mb-2 text-gray-800">
+                            Did playing this game enhance your understanding of limited field of view in endoscopic
+                            surgery? <span class="text-red-500">*</span>
+                        </div>
+                        <div class="flex space-x-6">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="enhancedUnderstanding" value="Yes"
+                                    class="form-radio text-blue-600" required>
+                                <span class="ml-2 text-gray-700">Yes</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="enhancedUnderstanding" value="No"
+                                    class="form-radio text-blue-600">
+                                <span class="ml-2 text-gray-700">No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Clinical Relevance -->
+                    <div class="mb-6">
+                        <div class="font-semibold mb-2 text-gray-800">
+                            Did you think the game was clinically relevant? <span class="text-red-500">*</span>
+                        </div>
+                        <div class="flex space-x-6">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="clinicallyRelevant" value="Yes"
+                                    class="form-radio text-blue-600" required>
+                                <span class="ml-2 text-gray-700">Yes</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="clinicallyRelevant" value="No"
+                                    class="form-radio text-blue-600">
+                                <span class="ml-2 text-gray-700">No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Difficulty Level -->
+                    <div class="mb-6">
+                        <div class="font-semibold mb-2 text-gray-800">
+                            Do you think the difficulty level was reasonable? <span class="text-red-500">*</span>
+                        </div>
+                        <div class="flex space-x-6">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="difficultyReasonable" value="Yes"
+                                    class="form-radio text-blue-600" required>
+                                <span class="ml-2 text-gray-700">Yes</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="difficultyReasonable" value="No"
+                                    class="form-radio text-blue-600">
+                                <span class="ml-2 text-gray-700">No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Game Engagement -->
+                    <div class="mb-6">
+                        <div class="font-semibold mb-2 text-gray-800">
+                            Did you find the game engaging? <span class="text-red-500">*</span>
+                        </div>
+                        <div class="flex space-x-6">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="gameEngaging" value="Yes" class="form-radio text-blue-600"
+                                    required>
+                                <span class="ml-2 text-gray-700">Yes</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="gameEngaging" value="No" class="form-radio text-blue-600">
+                                <span class="ml-2 text-gray-700">No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Visual Appeal -->
+                    <div class="mb-6">
+                        <div class="font-semibold mb-2 text-gray-800">
+                            Did you find the game layout visually pleasing? <span class="text-red-500">*</span>
+                        </div>
+                        <div class="flex space-x-6">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="visuallyPleasing" value="Yes" class="form-radio text-blue-600"
+                                    required>
+                                <span class="ml-2 text-gray-700">Yes</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="visuallyPleasing" value="No" class="form-radio text-blue-600">
+                                <span class="ml-2 text-gray-700">No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Other Comments -->
+                    <div class="mb-6">
+                        <label for="otherComments" class="block font-semibold mb-2 text-gray-800">
+                            Do you have any other comments about the game? <span class="text-red-500">*</span>
+                        </label>
+                        <textarea id="otherComments" name="otherComments" required
+                            class="w-full p-3 border border-gray-300 rounded-md min-h-24 resize-y focus:border-blue-500 focus:ring-1 focus:ring-blue-500"></textarea>
+                    </div>
+
+                    <!-- System Usability Scale Section -->
+                    <h2 class="text-2xl font-semibold text-blue-600 mt-8 pb-2 border-b border-gray-300">
+                        System Usability Scale (SUS) <span class="text-red-500">*</span>
+                    </h2>
+                    <div class="text-gray-600 mb-6">
+                        Please answer each question from 1 (strongly disagree) to 5 (strongly agree).
+                    </div>
+
+                    <!-- SUS Question 1 -->
+                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="font-semibold mb-2 text-gray-800">I think that I would like to use this system
+                            frequently. <span class="text-red-500">*</span></div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">Strongly disagree</div>
+                            <div class="flex space-x-4">
+                                <div class="text-center">
+                                    <input type="radio" name="sus1" value="1" class="form-radio text-blue-600 mb-1"
+                                        required>
+                                    <div>1</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus1" value="2" class="form-radio text-blue-600 mb-1">
+                                    <div>2</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus1" value="3" class="form-radio text-blue-600 mb-1">
+                                    <div>3</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus1" value="4" class="form-radio text-blue-600 mb-1">
+                                    <div>4</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus1" value="5" class="form-radio text-blue-600 mb-1">
+                                    <div>5</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">Strongly agree</div>
+                        </div>
+                    </div>
+
+                    <!-- SUS Question 2 -->
+                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="font-semibold mb-2 text-gray-800">I found the system unnecessarily complex. <span
+                                class="text-red-500">*</span></div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">Strongly disagree</div>
+                            <div class="flex space-x-4">
+                                <div class="text-center">
+                                    <input type="radio" name="sus2" value="1" class="form-radio text-blue-600 mb-1"
+                                        required>
+                                    <div>1</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus2" value="2" class="form-radio text-blue-600 mb-1">
+                                    <div>2</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus2" value="3" class="form-radio text-blue-600 mb-1">
+                                    <div>3</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus2" value="4" class="form-radio text-blue-600 mb-1">
+                                    <div>4</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus2" value="5" class="form-radio text-blue-600 mb-1">
+                                    <div>5</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">Strongly agree</div>
+                        </div>
+                    </div>
+
+                    <!-- SUS Question 3 -->
+                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="font-semibold mb-2 text-gray-800">I thought the system was easy to use. <span
+                                class="text-red-500">*</span></div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">Strongly disagree</div>
+                            <div class="flex space-x-4">
+                                <div class="text-center">
+                                    <input type="radio" name="sus3" value="1" class="form-radio text-blue-600 mb-1"
+                                        required>
+                                    <div>1</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus3" value="2" class="form-radio text-blue-600 mb-1">
+                                    <div>2</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus3" value="3" class="form-radio text-blue-600 mb-1">
+                                    <div>3</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus3" value="4" class="form-radio text-blue-600 mb-1">
+                                    <div>4</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus3" value="5" class="form-radio text-blue-600 mb-1">
+                                    <div>5</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">Strongly agree</div>
+                        </div>
+                    </div>
+
+                    <!-- SUS Question 4 -->
+                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="font-semibold mb-2 text-gray-800">I think that I would need the support of a
+                            technical person to be able to use this system. <span class="text-red-500">*</span></div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">Strongly disagree</div>
+                            <div class="flex space-x-4">
+                                <div class="text-center">
+                                    <input type="radio" name="sus4" value="1" class="form-radio text-blue-600 mb-1"
+                                        required>
+                                    <div>1</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus4" value="2" class="form-radio text-blue-600 mb-1">
+                                    <div>2</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus4" value="3" class="form-radio text-blue-600 mb-1">
+                                    <div>3</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus4" value="4" class="form-radio text-blue-600 mb-1">
+                                    <div>4</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus4" value="5" class="form-radio text-blue-600 mb-1">
+                                    <div>5</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">Strongly agree</div>
+                        </div>
+                    </div>
+
+                    <!-- SUS Question 5 -->
+                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="font-semibold mb-2 text-gray-800">I found the various functions in this system were
+                            well integrated. <span class="text-red-500">*</span></div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">Strongly disagree</div>
+                            <div class="flex space-x-4">
+                                <div class="text-center">
+                                    <input type="radio" name="sus5" value="1" class="form-radio text-blue-600 mb-1"
+                                        required>
+                                    <div>1</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus5" value="2" class="form-radio text-blue-600 mb-1">
+                                    <div>2</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus5" value="3" class="form-radio text-blue-600 mb-1">
+                                    <div>3</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus5" value="4" class="form-radio text-blue-600 mb-1">
+                                    <div>4</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus5" value="5" class="form-radio text-blue-600 mb-1">
+                                    <div>5</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">Strongly agree</div>
+                        </div>
+                    </div>
+
+                    <!-- SUS Question 6 -->
+                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="font-semibold mb-2 text-gray-800">I thought there was too much inconsistency in this
+                            system. <span class="text-red-500">*</span></div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">Strongly disagree</div>
+                            <div class="flex space-x-4">
+                                <div class="text-center">
+                                    <input type="radio" name="sus6" value="1" class="form-radio text-blue-600 mb-1"
+                                        required>
+                                    <div>1</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus6" value="2" class="form-radio text-blue-600 mb-1">
+                                    <div>2</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus6" value="3" class="form-radio text-blue-600 mb-1">
+                                    <div>3</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus6" value="4" class="form-radio text-blue-600 mb-1">
+                                    <div>4</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus6" value="5" class="form-radio text-blue-600 mb-1">
+                                    <div>5</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">Strongly agree</div>
+                        </div>
+                    </div>
+
+                    <!-- SUS Question 7 -->
+                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="font-semibold mb-2 text-gray-800">I would imagine that most people would learn to
+                            use this system very quickly. <span class="text-red-500">*</span></div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">Strongly disagree</div>
+                            <div class="flex space-x-4">
+                                <div class="text-center">
+                                    <input type="radio" name="sus7" value="1" class="form-radio text-blue-600 mb-1"
+                                        required>
+                                    <div>1</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus7" value="2" class="form-radio text-blue-600 mb-1">
+                                    <div>2</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus7" value="3" class="form-radio text-blue-600 mb-1">
+                                    <div>3</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus7" value="4" class="form-radio text-blue-600 mb-1">
+                                    <div>4</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus7" value="5" class="form-radio text-blue-600 mb-1">
+                                    <div>5</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">Strongly agree</div>
+                        </div>
+                    </div>
+
+                    <!-- SUS Question 8 -->
+                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="font-semibold mb-2 text-gray-800">I found the system very cumbersome to use. <span
+                                class="text-red-500">*</span></div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">Strongly disagree</div>
+                            <div class="flex space-x-4">
+                                <div class="text-center">
+                                    <input type="radio" name="sus8" value="1" class="form-radio text-blue-600 mb-1"
+                                        required>
+                                    <div>1</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus8" value="2" class="form-radio text-blue-600 mb-1">
+                                    <div>2</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus8" value="3" class="form-radio text-blue-600 mb-1">
+                                    <div>3</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus8" value="4" class="form-radio text-blue-600 mb-1">
+                                    <div>4</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus8" value="5" class="form-radio text-blue-600 mb-1">
+                                    <div>5</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">Strongly agree</div>
+                        </div>
+                    </div>
+
+                    <!-- SUS Question 9 -->
+                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="font-semibold mb-2 text-gray-800">I felt very confident using the system. <span
+                                class="text-red-500">*</span></div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">Strongly disagree</div>
+                            <div class="flex space-x-4">
+                                <div class="text-center">
+                                    <input type="radio" name="sus9" value="1" class="form-radio text-blue-600 mb-1"
+                                        required>
+                                    <div>1</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus9" value="2" class="form-radio text-blue-600 mb-1">
+                                    <div>2</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus9" value="3" class="form-radio text-blue-600 mb-1">
+                                    <div>3</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus9" value="4" class="form-radio text-blue-600 mb-1">
+                                    <div>4</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus9" value="5" class="form-radio text-blue-600 mb-1">
+                                    <div>5</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">Strongly agree</div>
+                        </div>
+                    </div>
+
+                    <!-- SUS Question 10 -->
+                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="font-semibold mb-2 text-gray-800">I needed to learn a lot of things before I could
+                            get going with this system. <span class="text-red-500">*</span></div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">Strongly disagree</div>
+                            <div class="flex space-x-4">
+                                <div class="text-center">
+                                    <input type="radio" name="sus10" value="1" class="form-radio text-blue-600 mb-1"
+                                        required>
+                                    <div>1</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus10" value="2" class="form-radio text-blue-600 mb-1">
+                                    <div>2</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus10" value="3" class="form-radio text-blue-600 mb-1">
+                                    <div>3</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus10" value="4" class="form-radio text-blue-600 mb-1">
+                                    <div>4</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="sus10" value="5" class="form-radio text-blue-600 mb-1">
+                                    <div>5</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">Strongly agree</div>
+                        </div>
+                    </div>
+
+                    <!-- NASA Task Load Index Section -->
+                    <h2 class="text-2xl font-semibold text-blue-600 mt-8 pb-2 border-b border-gray-300">
+                        NASA Task Load Index (TLX) <span class="text-red-500">*</span>
+                    </h2>
+                    <div class="text-gray-600 mb-6">
+                        Please answer on a scale of 1 ("Not at all") to 5 ("Very")
+                    </div>
+
+                    <!-- TLX Question 1 -->
+                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="font-semibold mb-2 text-gray-800">Mental demand: How mentally demanding was the
+                            task? <span class="text-red-500">*</span></div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">Not at all</div>
+                            <div class="flex space-x-4">
+                                <div class="text-center">
+                                    <input type="radio" name="tlx1" value="1" class="form-radio text-blue-600 mb-1"
+                                        required>
+                                    <div>1</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx1" value="2" class="form-radio text-blue-600 mb-1">
+                                    <div>2</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx1" value="3" class="form-radio text-blue-600 mb-1">
+                                    <div>3</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx1" value="4" class="form-radio text-blue-600 mb-1">
+                                    <div>4</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx1" value="5" class="form-radio text-blue-600 mb-1">
+                                    <div>5</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">Very</div>
+                        </div>
+                    </div>
+
+                    <!-- TLX Question 2 -->
+                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="font-semibold mb-2 text-gray-800">Physical demand: How physically demanding was the
+                            task? <span class="text-red-500">*</span></div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">Not at all</div>
+                            <div class="flex space-x-4">
+                                <div class="text-center">
+                                    <input type="radio" name="tlx2" value="1" class="form-radio text-blue-600 mb-1"
+                                        required>
+                                    <div>1</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx2" value="2" class="form-radio text-blue-600 mb-1">
+                                    <div>2</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx2" value="3" class="form-radio text-blue-600 mb-1">
+                                    <div>3</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx2" value="4" class="form-radio text-blue-600 mb-1">
+                                    <div>4</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx2" value="5" class="form-radio text-blue-600 mb-1">
+                                    <div>5</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">Very</div>
+                        </div>
+                    </div>
+
+                    <!-- TLX Question 3 -->
+                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="font-semibold mb-2 text-gray-800">Temporal Demand: How hurried or rushed was the
+                            pace of the task? <span class="text-red-500">*</span></div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">Not at all</div>
+                            <div class="flex space-x-4">
+                                <div class="text-center">
+                                    <input type="radio" name="tlx3" value="1" class="form-radio text-blue-600 mb-1"
+                                        required>
+                                    <div>1</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx3" value="2" class="form-radio text-blue-600 mb-1">
+                                    <div>2</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx3" value="3" class="form-radio text-blue-600 mb-1">
+                                    <div>3</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx3" value="4" class="form-radio text-blue-600 mb-1">
+                                    <div>4</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx3" value="5" class="form-radio text-blue-600 mb-1">
+                                    <div>5</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">Very</div>
+                        </div>
+                    </div>
+
+                    <!-- TLX Question 4 -->
+                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="font-semibold mb-2 text-gray-800">Performance: How successful were you at what you
+                            were trying to do? <span class="text-red-500">*</span></div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">Not at all</div>
+                            <div class="flex space-x-4">
+                                <div class="text-center">
+                                    <input type="radio" name="tlx4" value="1" class="form-radio text-blue-600 mb-1"
+                                        required>
+                                    <div>1</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx4" value="2" class="form-radio text-blue-600 mb-1">
+                                    <div>2</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx4" value="3" class="form-radio text-blue-600 mb-1">
+                                    <div>3</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx4" value="4" class="form-radio text-blue-600 mb-1">
+                                    <div>4</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx4" value="5" class="form-radio text-blue-600 mb-1">
+                                    <div>5</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">Very</div>
+                        </div>
+                    </div>
+
+                    <!-- TLX Question 5 -->
+                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="font-semibold mb-2 text-gray-800">Effort: How hard did you have to work to
+                            accomplish your level of performance? <span class="text-red-500">*</span></div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">Not at all</div>
+                            <div class="flex space-x-4">
+                                <div class="text-center">
+                                    <input type="radio" name="tlx5" value="1" class="form-radio text-blue-600 mb-1"
+                                        required>
+                                    <div>1</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx5" value="2" class="form-radio text-blue-600 mb-1">
+                                    <div>2</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx5" value="3" class="form-radio text-blue-600 mb-1">
+                                    <div>3</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx5" value="4" class="form-radio text-blue-600 mb-1">
+                                    <div>4</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx5" value="5" class="form-radio text-blue-600 mb-1">
+                                    <div>5</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">Very</div>
+                        </div>
+                    </div>
+
+                    <!-- TLX Question 6 -->
+                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
+                        <div class="font-semibold mb-2 text-gray-800">Frustration: How insecure, discouraged, irritated,
+                            stressed and annoyed were you? <span class="text-red-500">*</span></div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-xs text-gray-500">Not at all</div>
+                            <div class="flex space-x-4">
+                                <div class="text-center">
+                                    <input type="radio" name="tlx6" value="1" class="form-radio text-blue-600 mb-1"
+                                        required>
+                                    <div>1</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx6" value="2" class="form-radio text-blue-600 mb-1">
+                                    <div>2</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx6" value="3" class="form-radio text-blue-600 mb-1">
+                                    <div>3</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx6" value="4" class="form-radio text-blue-600 mb-1">
+                                    <div>4</div>
+                                </div>
+                                <div class="text-center">
+                                    <input type="radio" name="tlx6" value="5" class="form-radio text-blue-600 mb-1">
+                                    <div>5</div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500">Very</div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex justify-center mt-10">
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition duration-200">
+                            Submit Feedback
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-blue-900 py-4 mt-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-blue-200 text-sm">© 2025 UCL Medical Physics and Biomedical Engineering</p>
+            <p class="text-blue-300 text-sm">Ethics Committee Approval ID: 24249/005b</p>
+        </div>
+    </footer>
+
+    <!-- Form submission script -->
+    <script>
+        // Configure the URL of your Google Apps Script web app
+        const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxs82ZicA1Bvj38hpoZ4xlyB-S34gDoA1GLaDGZxhDmeq232UHgMy7QeS2OXT31MXcomQ/exec";
+
+        // Get the user's UUID
+        function getUUID() {
+            return localStorage.getItem('vessel_game_uuid') || 'unknown-user';
+        }
+
+        // Validate form
+        function validateForm() {
+            const form = document.getElementById('feedbackForm');
+            return form.checkValidity();
+        }
+
+        // Submit form data to Google Sheet
+        async function submitFormToSheet(formData) {
+            try {
+                // Add the UUID to the form data
+                formData.append('uuid', getUUID());
+                formData.append('formType', 'feedback');
+
+                // Send the data
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Required for Google Apps Script web apps
+                    body: formData
+                });
+
+                // Due to 'no-cors', we can't read the actual response
+                console.log("Form submitted successfully");
+                return true;
+
+            } catch (error) {
+                console.error("Error submitting form:", error);
+                return false;
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('feedbackForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                alert("Please fill in all required fields");
+                return false;
+            }
+
+            // Show loading state
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            const originalText = submitButton.innerHTML;
+            submitButton.innerHTML = "Submitting...";
+            submitButton.disabled = true;
+
+            // Get the form data
+            const formData = new FormData(e.target);
+
+            // Submit the form
+            const success = await submitFormToSheet(formData);
+
+            if (success) {
+                // Show success message
+                alert("Thank you for your feedback!");
+
+                // Reset the form
+                e.target.reset();
+
+                // Redirect to the home page after a delay
+                setTimeout(() => {
+                    window.location.href = './index.html';
+                }, 2000);
+            } else {
+                // Show error message
+                alert("There was an error submitting your feedback. Please try again.");
+
+                // Reset button
+                submitButton.innerHTML = originalText;
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

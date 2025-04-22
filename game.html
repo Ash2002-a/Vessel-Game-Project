@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Vessel Cutting Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <style>
+        canvas {
+            cursor: crosshair;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.5;
+            }
+        }
+
+        .pulse {
+            animation: pulse 1s infinite;
+        }
+
+        .heart-rate-alert {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #ff0000;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            z-index: 100;
+        }
+
+        .incoming-call {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #ffffff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            z-index: 100;
+        }
+
+        .voice-over {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #00ffff;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            z-index: 100;
+        }
+    </style>
+    <script>
+        // Client-side integration for vessel game data collection
+
+        // Configure the URL of your Google Apps Script web app after deployment
+        const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxs82ZicA1Bvj38hpoZ4xlyB-S34gDoA1GLaDGZxhDmeq232UHgMy7QeS2OXT31MXcomQ/exec";
+
+        // Generate or retrieve a UUID
+        function getOrCreateUUID() {
+            let uuid = localStorage.getItem('vessel_game_uuid');
+
+            if (!uuid) {
+                // Generate a new UUID
+                uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+
+                // Store it in localStorage
+                localStorage.setItem('vessel_game_uuid', uuid);
+            }
+
+            return uuid;
+        }
+
+        // Send data to the Google Apps Script
+        async function sendDataToSheet(dataType, data) {
+            const uuid = getOrCreateUUID();
+
+            try {
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Required for Google Apps Script web apps
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        'formType': 'gameData',
+                        'uuid': uuid,
+                        'dataType': dataType,
+                        'data': JSON.stringify(data)
+                    })
+                });
+
+                // Due to 'no-cors' mode, we can't read the response
+                console.log(`Data sent to ${dataType} sheet`);
+                return true;
+
+            } catch (error) {
+                console.error(`Error sending data to ${dataType} sheet:`, error);
+                return false;
+            }
+        }
+
+        // Send mouse tracking data
+        function sendMouseTrackingData(data) {
+            return sendDataToSheet('mouse-tracking', data);
+        }
+
+        // Send vessel creation data
+        function sendVesselCreationData(data) {
+            return sendDataToSheet('vessel-creation', data);
+        }
+
+        // Initialize UUID on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            // Ensure UUID exists
+            getOrCreateUUID();
+            console.log("Game initialized with UUID:", localStorage.getItem('vessel_game_uuid'));
+        });
+    </script>
+</head>
+
+<body class="bg-gradient-to-b from-blue-800 to-blue-900 font-sans text-gray-800">
+    <nav class="bg-blue-600 shadow-md">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex items-center justify-center h-16 space-x-8">
+                <a class="text-white hover:text-blue-100 font-medium text-lg transition duration-200"
+                    href="./index.html">Home</a>
+                <a class="text-white hover:text-blue-100 font-medium text-lg transition duration-200"
+                    href="./about.html">About</a>
+                <a class="text-white hover:text-blue-100 font-medium text-lg transition duration-200 border-b-2 border-white"
+                    href="./game.html">Play Game</a>
+                <a class="text-white hover:text-blue-100 font-medium text-lg transition duration-200"
+                    href="./feedback.html">Feedback</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold mb-4 text-white">Blood Vessel Cutting Game</h1>
+
+        <!-- Hidden background image -->
+        <img id="surgical-background" src="assets/surgical-background.jpg" class="hidden" crossorigin="anonymous" alt="Surgical Background">
+
+        <!-- Consent Form Modal -->
+        <div id="consentModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+            <div class="bg-gray-800 p-8 rounded-lg text-center max-w-2xl mx-4 max-h-[80vh] overflow-y-auto">
+                <h2 class="text-3xl font-bold text-white mb-6">Research Study Consent Form</h2>
+                
+                <div class="text-left text-gray-300 mb-6 space-y-4">
+                    <p class="text-lg font-semibold text-white">Title of Study: A serious game to study the effect of limited field of view in keyhole surgery</p>
+                    <p>Department: UCL Medical Physics and Biomedical Engineering</p>
+                    <p>Researcher(s): Aayushi Oza (<a href="mailto:aayushi.oza@ucl.ac.uk" class="text-blue-600 hover:text-blue-800">aayushi.oza@ucl.ac.uk</a>), Stephen Thompson (<a href="mailto:s.thompson@ucl.ac.uk" class="text-blue-600 hover:text-blue-800">s.thompson@ucl.ac.uk</a>)</p>
+                    <p>Principal Researcher: Matthew J. Clarkson (<a href="mailto:m.clarkson@ucl.ac.uk" class="text-blue-600 hover:text-blue-800">m.clarkson@ucl.ac.uk</a>)</p>
+                    <p>UCL Data Protection Officer: Spenser Crouch (<a href="mailto:data-protection@ucl.ac.uk" class="text-blue-600 hover:text-blue-800">data-protection@ucl.ac.uk</a>)</p>
+                    <p>This study has been approved by the UCL Research Ethics Committee: Project ID number: 24249/005b</p>
+                </div>
+
+                <div class="text-left text-gray-300 mb-6 space-y-4">
+                    <p class="text-lg font-semibold text-white">By proceeding with the game, you confirm that:</p>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li>You have read and understood the Information Sheet for the above study</li>
+                        <li>You understand that data will be anonymised and cannot be linked to your personal data</li>
+                        <li>You understand that all personal information will remain confidential</li>
+                        <li>You understand that you will not be able to withdraw from the study after data collection</li>
+                        <li>You understand that your information may be subject to review by responsible individuals from the University</li>
+                        <li>You understand that you will not benefit financially from this study</li>
+                        <li>You agree that your anonymised research data may be used by others for future research</li>
+                        <li>You understand that the information you submit will be published as a report</li>
+                    </ul>
+                </div>
+
+                <div class="flex flex-col space-y-4">
+                    <button id="acceptConsent" class="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg text-xl transition duration-200">
+                        I Understand and Agree to Participate
+                    </button>
+                    <button id="declineConsent" class="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg text-xl transition duration-200">
+                        I Do Not Agree
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level Display -->
+        <div id="levelDisplay" class="mb-2 text-white text-xl">
+            Level: <span id="currentLevel">1</span> / 7
+        </div>
+
+        <!-- Start Screen -->
+        <div id="startScreen" class="mb-6">
+            <p class="text-white mb-4">Click the button below to start. This game uses sound effects.</p>
+            <button onclick="startNewGame()"
+                class="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg text-xl transition duration-200">
+                Start Game
+            </button>
+        </div>
+
+        <!-- Game Instructions -->
+        <div
+            class="bg-white bg-opacity-10 backdrop-blur-sm shadow-2xl p-6 rounded-lg mb-6 text-left border border-blue-400 border-opacity-30">
+            <h2 class="text-2xl font-bold mb-3 text-white">How to Play</h2>
+            <ul class="list-disc pl-6 text-gray-300 space-y-2">
+                <li>Click and drag across vessels to cut them</li>
+                <li>White endpoints: Correct vessel (+10 points)</li>
+                <li>White-Black endpoints: Wrong vessel (-5 points)</li>
+                <li>Complete 7 levels with increasing difficulty:</li>
+                <ul class="list-disc pl-6 mt-2">
+                    <li>Level 1-2: Basic vessel cutting</li>
+                    <li>Level 3: Limited field of view</li>
+                    <li>Level 4-5: Intertwined vessels with distractions</li>
+                    <li>Level 6-7: Multiple complex vessels with background distractions</li>
+                </ul>
+                <li>Each level has 30 seconds</li>
+                <li>New vessels appear automatically</li>
+                <li>Watch for distractions outside your field of view! Click them quickly.</li>
+                <li>In later levels, deal with background distractions like calls and alerts.</li>
+                <li><span class="text-yellow-300">NEW:</span> Audio cues for gameplay events</li>
+                <li><span class="text-yellow-300">NEW:</span> Download your performance data after game</li>
+            </ul>
+        </div>
+
+        <!-- Score and Timer -->
+        <div class="flex justify-center gap-8 mb-6">
+            <div
+                class="bg-white bg-opacity-10 backdrop-blur-sm shadow-2xl border border-blue-400 border-opacity-30 p-4 rounded-lg">
+                <p class="text-white text-xl">Score: <span id="score" class="font-bold">0</span></p>
+            </div>
+            <div
+                class="bg-white bg-opacity-10 backdrop-blur-sm shadow-2xl border border-blue-400 border-opacity-30 p-4 rounded-lg">
+                <p class="text-white text-xl">Time: <span id="timer" class="font-bold">30</span>s</p>
+            </div>
+        </div>
+
+        <!-- Game Canvas -->
+        <div class="flex justify-center mb-6">
+            <div class="game-container relative">
+                <!-- Level Indicator -->
+                <div class="absolute -top-16 left-1/2 transform -translate-x-1/2 z-10">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-xl p-4 flex items-center space-x-4">
+                        <div class="bg-white bg-opacity-20 rounded-full p-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <div class="text-white">
+                            <div class="text-sm font-medium opacity-80">Current Level</div>
+                            <div class="text-2xl font-bold">Level <span id="currentLevel">1</span> / 7</div>
+                        </div>
+                        <div class="h-12 w-1 bg-white bg-opacity-20 rounded-full"></div>
+                        <div class="text-white">
+                            <div class="text-sm font-medium opacity-80">Score</div>
+                            <div class="text-2xl font-bold"><span id="score">0</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <canvas id="gameCanvas" width="800" height="600"
+                    class="border-4 border-blue-400 border-opacity-30 rounded-lg bg-red-600">
+                </canvas>
+
+                <!-- Distraction Indicator -->
+                <div id="distraction-indicator"
+                    class="hidden absolute top-4 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-70 text-white px-4 py-2 rounded-lg pulse">
+                    Alert
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Download Container (initially hidden) -->
+        <div id="downloadContainer"
+            class="hidden mt-6 bg-white bg-opacity-10 backdrop-blur-sm shadow-2xl p-6 rounded-lg border border-blue-400 border-opacity-30">
+            <h3 class="text-xl font-bold text-white mb-4">Analytics Data</h3>
+            <p class="text-blue-100 mb-4">Download your performance data for analysis</p>
+            <button onclick="downloadAnalytics()"
+                class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-200 flex items-center mx-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download Data (CSV)
+            </button>
+        </div>
+
+        <!-- Background Distraction Elements -->
+        <div id="heart-rate-alert" class="heart-rate-alert hidden pulse">
+            ❤️ HEART RATE CRITICAL: 150 BPM
+        </div>
+
+        <div id="incoming-call" class="incoming-call hidden pulse">
+            📞 INCOMING CALL: Dr. Smith
+        </div>
+
+        <div id="voice-over" class="voice-over hidden">
+            🔊 "Nurse, prepare additional clamps."
+        </div>
+
+        <!-- Level Complete Modal -->
+        <div id="levelComplete" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center">
+            <div class="bg-gray-800 p-8 rounded-lg text-center">
+                <h2 class="text-3xl font-bold text-white mb-4">Level Complete!</h2>
+                <p class="text-xl text-white mb-4">Score: <span id="levelScore">0</span></p>
+                <p class="text-gray-300 mb-4">Get ready for the next level!</p>
+                <button onclick="nextLevel()"
+                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition duration-200">
+                    Next Level
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div id="gameOver" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center">
+            <div class="bg-gray-800 p-8 rounded-lg text-center">
+                <h2 class="text-3xl font-bold text-white mb-4">Game Over!</h2>
+                <p class="text-xl text-white mb-2">Final Score: <span id="finalScore">0</span></p>
+                <p class="text-xl text-white mb-4">Level Reached: <span id="finalLevel">1</span></p>
+                <div class="space-y-4">
+                    <button onclick="downloadAnalytics()"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition duration-200 flex items-center mx-auto mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download Analytics Data
+                    </button>
+                    <button onclick="navigateToFeedback()"
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition duration-200 flex items-center mx-auto mb-4">
+                        Feedback
+                    </button>
+                    <p class="text-gray-300">Can you reach Level 7?</p>
+                    <button onclick="startNewGame()"
+                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition duration-200">
+                        Play Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-blue-900 py-8 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-blue-200 mb-2">© 2025 UCL Medical Physics and Biomedical Engineering</p>
+            <p class="text-blue-300 text-sm">Ethics Committee Approval ID: 24249/005b</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        function toggleMute() {
+            const muteButton = document.getElementById('muteButton');
+            if (Tone.getContext().state === 'running') {
+                Tone.getContext().suspend();
+                muteButton.textContent = 'Unmute';
+                muteButton.classList.remove('bg-red-500', 'hover:bg-red-700');
+                muteButton.classList.add('bg-green-500', 'hover:bg-green-700');
+            } else {
+                Tone.getContext().resume();
+                muteButton.textContent = 'Mute';
+                muteButton.classList.remove('bg-green-500', 'hover:bg-green-700');
+                muteButton.classList.add('bg-red-500', 'hover:bg-red-700');
+            }
+        }
+    </script>
+    <script src="game.js"></script>
+</body>
+
+</html>
