@@ -245,6 +245,10 @@
         <div class="flex justify-center gap-8 mb-6">
             <div
                 class="bg-white bg-opacity-10 backdrop-blur-sm shadow-2xl border border-blue-400 border-opacity-30 p-4 rounded-lg">
+                <p class="text-white text-xl">Level: <span id="currentLevel">1</span> / 7</p>
+            </div>
+            <div
+                class="bg-white bg-opacity-10 backdrop-blur-sm shadow-2xl border border-blue-400 border-opacity-30 p-4 rounded-lg">
                 <p class="text-white text-xl">Score: <span id="score" class="font-bold">0</span></p>
             </div>
             <div
@@ -256,26 +260,6 @@
         <!-- Game Canvas -->
         <div class="flex justify-center mb-6">
             <div class="game-container relative">
-                <!-- Level Indicator -->
-                <div class="absolute -top-16 left-1/2 transform -translate-x-1/2 z-10">
-                    <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-xl p-4 flex items-center space-x-4">
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                        </div>
-                        <div class="text-white">
-                            <div class="text-sm font-medium opacity-80">Current Level</div>
-                            <div class="text-2xl font-bold">Level <span id="currentLevel">1</span> / 7</div>
-                        </div>
-                        <div class="h-12 w-1 bg-white bg-opacity-20 rounded-full"></div>
-                        <div class="text-white">
-                            <div class="text-sm font-medium opacity-80">Score</div>
-                            <div class="text-2xl font-bold"><span id="score">0</span></div>
-                        </div>
-                    </div>
-                </div>
-
                 <canvas id="gameCanvas" width="800" height="600"
                     class="border-4 border-blue-400 border-opacity-30 rounded-lg bg-red-600">
                 </canvas>
