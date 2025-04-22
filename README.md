@@ -1,28 +1,18 @@
-# 🎮 Vessel Game: Surgical Field of View Study
+#### Vessel Game
+vessel-game-project.vercel.app
 
-[![Live Demo](https://img.shields.io/badge/demo-vessel--game--project.vercel.app-brightgreen)](https://vessel-game-project.vercel.app)
+### Research Question
+A Serious Game to Study the Effect of Limited Field of View in Keyhole Surgery.
 
-## �� Research Overview
-
-This project investigates the effects of limited field of view in keyhole surgery through an innovative serious game approach. The game simulates surgical scenarios where players must navigate and perform tasks with varying levels of visual field constraints, providing valuable insights into surgical performance and training.
+## Project Overview
+This project investigates the effects of limited field of view in keyhole surgery through a serious game approach. The game simulates surgical scenarios where players must navigate and perform tasks with varying levels of visual field constraints.
 
 ### 🎯 Research Objectives
 
-1. **Instrument Efficiency** 📊
-   - Measure instrument utilization efficiency based on total movement
-   - Analyze movement patterns and optimization strategies
-
-2. **Task Completion Time** ⏱️
-   - Evaluate time efficiency in surgical tasks
-   - Identify bottlenecks and improvement areas
-
-3. **Peripheral Awareness** 👀
-   - Assess surgeon's ability to notice critical events outside main focus
-   - Study visual attention distribution
-
-4. **Distraction Impact** ⚠️
-   - Analyze how distractions affect surgical focus
-   - Measure error rates under different distraction conditions
+1. **Instrument Efficiency**: Measure how efficiently instruments are used based on total movement
+2. **Task Completion Time**: Analyse how quickly tasks are completed
+3. **Peripheral Awareness**: Assess how well surgeons notice important events outside their main focus
+4. **Distraction Impact**: Study how distractions affect focus and errors
 
 ## 📊 Data Collection Pipeline
 
@@ -34,7 +24,7 @@ This project investigates the effects of limited field of view in keyhole surger
 ### 2. Data Processing Workflow
 1. Execute AppScript to export data from Google Sheets
 2. Download generated ZIP folder containing user data
-3. Process and analyze data using provided tools
+3. Process and analyse data using provided tools
 
 ## 🛠️ Technical Setup
 
@@ -52,7 +42,6 @@ This project investigates the effects of limited field of view in keyhole surger
 2. Install required VS Code extensions:
    - Live Server (by Ritwick Dey)
    - Python
-   - GitLens (recommended)
 
 #### 2. Python Environment
 ```bash
@@ -83,7 +72,7 @@ pip install -r requirements.txt
 - **Web**: [Vessel Game User Analysis](https://vessel-game-user.streamlit.app/)
 - Features:
   - Performance metrics dashboard
-  - Movement pattern visualization
+  - Movement pattern visualisation
   - Distraction impact analysis
   - Level progression tracking
 
@@ -94,7 +83,7 @@ pip install -r requirements.txt
   - Aggregate statistics
   - Comparative analysis
   - Research insights
-  - Advanced data visualization
+  - Advanced data visualisation
 
 ## 📋 Data Structure
 
