@@ -1,5 +1,6 @@
 ### Research Question
 A Serious Game to Study the Effect of Limited Field of View in Keyhole Surgery.
+vessel-game-project.vercel.app
 
 ## Project Overview
 This project investigates the effects of limited field of view in keyhole surgery through a serious game approach. The game simulates surgical scenarios where players must navigate and perform tasks with varying levels of visual field constraints.
@@ -20,27 +21,6 @@ This project investigates the effects of limited field of view in keyhole surger
 ### 2. Data Processing
 1. Run AppScript to export all data from Google Sheets to Google Drive
 2. Download the generated ZIP folder containing all user data
-
-### 3. Data Analysis
-Two analysis tools are provided:
-
-#### Individual Analysis (user.py)
-- Run `streamlit run streamlit/user.py`
-- Enter your UUID to view personalised analytics
-- Features:
-  - Performance metrics
-  - Movement patterns
-  - Distraction analysis
-  - Level progression
-
-#### Admin Analysis (admin.py)
-- Run `streamlit run streamlit/admin.py`
-- Upload the ZIP folder containing all user data
-- Features:
-  - Aggregate statistics
-  - Comparative analysis
-  - Research insights
-  - Data visualisation
 
 ## Technical Requirements
 
@@ -65,7 +45,7 @@ Two analysis tools are provided:
 1. Create and activate a virtual environment:
    ```bash
    # Create virtual environment
-   python -m venv venv
+   python3 -m venv venv
 
    # Activate virtual environment
    # On Windows:
@@ -86,16 +66,31 @@ Two analysis tools are provided:
 3. Select "Open with Live Server"
 4. The game will open in your default web browser at `http://localhost:5500`
 
-### Running the Analysis Tools
-1. For individual analysis:
-   ```bash
-   streamlit run streamlit/user.py
-   ```
+### 4. Data Analysis
+Two analysis tools are provided:
 
-2. For admin analysis:
-   ```bash
-   streamlit run streamlit/admin.py
-   ```
+#### Individual Analysis (user.py)
+Locally:
+- Run `streamlit run streamlit/user.py`
+OR 
+[https://vessel-game-user.streamlit.app/]
+- Features:
+  - Performance metrics
+  - Movement patterns
+  - Distraction analysis
+  - Level progression
+
+#### Admin Analysis (admin.py)
+Locally:
+- Run `streamlit run streamlit/admin.py`
+OR
+[https://vessel-game-owner.streamlit.app/]
+- Upload the ZIP folder containing all user data
+- Features:
+  - Aggregate statistics
+  - Comparative analysis
+  - Research insights
+  - Data visualisation
 
 ## Data Structure
 The game collects the following data types:
