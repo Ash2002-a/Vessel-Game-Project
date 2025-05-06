@@ -29,6 +29,8 @@ class VesselGame {
         this.gameStarted = false;
         this.cursorLog = [];
         this.vesselLog = [];
+        this.cursorLogBackup = []; // New array to store all cursor data for download
+        this.vesselLogBackup = []; // New array to store all vessel data for download
         this.currentLevel = 1;
         this.vesselGenerationTimer = null;
         this.levelTimer = null;
@@ -105,6 +107,9 @@ class VesselGame {
         if (this.cursorLog.length > 0 && this.gameStarted) {
             // Clone the data we're about to send
             const cursorData = [...this.cursorLog];
+            
+            // Add to backup for download
+            this.cursorLogBackup = [...this.cursorLogBackup, ...cursorData];
 
             // Clear out the data we're sending to avoid duplicates
             this.cursorLog = [];
@@ -122,6 +127,10 @@ class VesselGame {
         // Do the same for vessel data
         if (this.vesselLog.length > 0 && this.gameStarted) {
             const vesselData = [...this.vesselLog];
+            
+            // Add to backup for download
+            this.vesselLogBackup = [...this.vesselLogBackup, ...vesselData];
+
             this.vesselLog = [];
 
             sendVesselCreationData(vesselData)
@@ -295,6 +304,7 @@ class VesselGame {
         this.distractors = [];
         this.cursorLog = [];
         this.vesselLog = [];
+        // Don't reset the backup arrays to keep all data for download
         this.updateUI();
 
         // Reset all distraction states
@@ -546,6 +556,7 @@ class VesselGame {
         };
 
         this.cursorLog.push(logEntry);
+        this.cursorLogBackup.push(logEntry); // Backup immediately
     }
 
     startLevelTimer() {
@@ -685,6 +696,7 @@ class VesselGame {
         };
 
         this.vesselLog.push(vesselData);
+        this.vesselLogBackup.push(vesselData); // Backup immediately
     }
 
     calculateBezierPoint(t, p0, p1, p2, p3) {
@@ -945,9 +957,6 @@ class VesselGame {
 
         this.isDrawing = true;
         this.cutPath = [{ x, y }];
-
-        // Play cutting start sound
-        // this.synths.main.triggerAttackRelease("A3", "32n");
     }
 
     checkAllVesselsCut() {
@@ -1091,6 +1100,122 @@ class VesselGame {
             fieldOfView: this.fieldOfView.enabled
         };
         this.cursorLog.push(logEntry);
+        this.cursorLogBackup.push(logEntry); // Backup immediately
+    }
+
+    // CSV DOWNLOAD FUNCTIONS
+    
+    // Convert cursor tracking data to CSV
+    convertCursorTrackingToCSV() {
+        // Use combined data from both current and backup arrays
+        const combinedCursorLog = [...this.cursorLog, ...this.cursorLogBackup];
+        
+        if (combinedCursorLog.length === 0) {
+            console.log('No cursor tracking data to download');
+            alert('No cursor tracking data available to download.');
+            return '';
+        }
+        
+        // Define CSV header based on cursor log properties
+        const headers = Object.keys(combinedCursorLog[0]);
+        let csvContent = headers.join(',') + '\n';
+        
+        // Add each row of data
+        combinedCursorLog.forEach(log => {
+            const row = headers.map(header => {
+                // Handle nested objects and escape commas in values
+                let value = log[header];
+                if (typeof value === 'object' && value !== null) {
+                    value = JSON.stringify(value);
+                }
+                // Convert boolean values to strings
+                if (typeof value === 'boolean') {
+                    value = value.toString();
+                }
+                // Escape and quote values with commas
+                if (value && value.toString().includes(',')) {
+                    return `"${value}"`;
+                }
+                return value;
+            }).join(',');
+            csvContent += row + '\n';
+        });
+        
+        return csvContent;
+    }
+
+    // Convert vessel tracking data to CSV
+    convertVesselTrackingToCSV() {
+        // Use combined data from both current and backup arrays
+        const combinedVesselLog = [...this.vesselLog, ...this.vesselLogBackup];
+        
+        if (combinedVesselLog.length === 0) {
+            console.log('No vessel tracking data to download');
+            alert('No vessel tracking data available to download.');
+            return '';
+        }
+        
+        // Define CSV header based on vessel log properties
+        const headers = Object.keys(combinedVesselLog[0]);
+        let csvContent = headers.join(',') + '\n';
+        
+        // Add each row of data
+        combinedVesselLog.forEach(log => {
+            const row = headers.map(header => {
+                // Handle nested objects and escape commas in values
+                let value = log[header];
+                if (typeof value === 'object' && value !== null) {
+                    value = JSON.stringify(value);
+                }
+                // Convert boolean values to strings
+                if (typeof value === 'boolean') {
+                    value = value.toString();
+                }
+                // Escape and quote values with commas
+                if (value && value.toString().includes(',')) {
+                    return `"${value}"`;
+                }
+                return value;
+            }).join(',');
+            csvContent += row + '\n';
+        });
+        
+        return csvContent;
+    }
+
+    // Download CSV file
+    downloadCSV(csvContent, filename) {
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Download cursor tracking data
+    downloadCursorTrackingCSV() {
+        const csvContent = this.convertCursorTrackingToCSV();
+        if (csvContent) {
+            const uuid = localStorage.getItem('vessel_game_uuid') || 'unknown';
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const filename = `cursor_tracking_${uuid}_${timestamp}.csv`;
+            this.downloadCSV(csvContent, filename);
+        }
+    }
+
+    // Download vessel tracking data
+    downloadVesselTrackingCSV() {
+        const csvContent = this.convertVesselTrackingToCSV();
+        if (csvContent) {
+            const uuid = localStorage.getItem('vessel_game_uuid') || 'unknown';
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const filename = `vessel_tracking_${uuid}_${timestamp}.csv`;
+            this.downloadCSV(csvContent, filename);
+        }
     }
 
     endGame() {
@@ -1101,8 +1226,15 @@ class VesselGame {
         if (this.distractorTimer) clearTimeout(this.distractorTimer);
         if (this.backgroundDistractionTimer) clearTimeout(this.backgroundDistractionTimer);
 
-        // Send any remaining data
+        // Make sure all data is processed and ready for download
         this.sendTrackingData();
+        
+        // Ensure we have local copies of all data, even if it was sent to the server
+        // This ensures the download function will have data to work with
+        if (this.cursorLog.length === 0 && this.vesselLog.length === 0 && 
+            this.cursorLogBackup.length === 0 && this.vesselLogBackup.length === 0) {
+            console.log("Warning: No tracking data available for download");
+        }
 
         // Stop any active background distractions
         for (const type in this.backgroundDistractions) {
@@ -1151,6 +1283,7 @@ class VesselGame {
         this.distractors = [];
         this.cursorLog = [];
         this.vesselLog = [];
+        // Don't clear backup arrays to keep all data for download
 
         // Stop any active background distractions
         for (const type in this.backgroundDistractions) {
