@@ -277,7 +277,7 @@ class VesselGame {
     startGame() {
         // Start Tone.js context after user interaction
         Tone.start();
-        
+
         this.resetGame();
         this.startLevel(1);
 
@@ -687,87 +687,6 @@ class VesselGame {
         this.vesselLog.push(vesselData);
     }
 
-    // Function to generate CSV content from cursor log
-    generateCursorCSV() {
-        const headers = [
-            'TIMESTAMP', 'X_POSITION', 'Y_POSITION', 'IS_CUTTING',
-            'SCORE', 'TIME_LEFT', 'LEVEL', 'FIELD_OF_VIEW',
-            'DISTRACTION_ID', 'DISTRACTION_TYPE', 'DISTRACTION_ACTION'
-        ];
-
-        let csvContent = headers.join(',') + '\n';
-
-        this.cursorLog.forEach(entry => {
-            const row = [
-                entry.timestamp,
-                entry.x,
-                entry.y,
-                entry.isCutting,
-                entry.score,
-                entry.timeLeft,
-                entry.level,
-                entry.fieldOfView,
-                entry.distractionId || '',
-                entry.distractionType || '',
-                entry.distractionAction || ''
-            ];
-            csvContent += row.join(',') + '\n';
-        });
-
-        return csvContent;
-    }
-
-    // Function to generate CSV content from vessel log
-    generateVesselCSV() {
-        const headers = [
-            'TIMESTAMP', 'VESSEL_ID', 'IS_CORRECT', 'START_X', 'START_Y',
-            'END_X', 'END_Y', 'CONTROL_POINT1_X', 'CONTROL_POINT1_Y',
-            'CONTROL_POINT2_X', 'CONTROL_POINT2_Y', 'PATH_POINTS', 'EVENT',
-            'IS_CUT', 'LEVEL', 'IS_INTERTWINED'
-        ];
-
-        let csvContent = headers.join(',') + '\n';
-
-        this.vesselLog.forEach(entry => {
-            const row = [
-                entry.timestamp,
-                entry.vesselId,
-                entry.isCorrect,
-                entry.startX,
-                entry.startY,
-                entry.endX,
-                entry.endY,
-                entry.cp1x,
-                entry.cp1y,
-                entry.cp2x,
-                entry.cp2y,
-                entry.pathPoints,
-                entry.event,
-                entry.isCut,
-                entry.level,
-                entry.intertwined
-            ];
-            csvContent += row.join(',') + '\n';
-        });
-
-        return csvContent;
-    }
-
-    // Function to download CSV data
-    downloadCSV(content, filename) {
-        const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-
-        link.setAttribute('href', url);
-        link.setAttribute('download', filename);
-        link.style.visibility = 'hidden';
-
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
     calculateBezierPoint(t, p0, p1, p2, p3) {
         return Math.pow(1 - t, 3) * p0 +
             3 * Math.pow(1 - t, 2) * t * p1 +
@@ -843,11 +762,11 @@ class VesselGame {
             // Draw cut length indicator
             let totalLength = 0;
             for (let i = 1; i < this.cutPath.length; i++) {
-                const dx = this.cutPath[i].x - this.cutPath[i-1].x;
-                const dy = this.cutPath[i].y - this.cutPath[i-1].y;
+                const dx = this.cutPath[i].x - this.cutPath[i - 1].x;
+                const dy = this.cutPath[i].y - this.cutPath[i - 1].y;
                 totalLength += Math.sqrt(dx * dx + dy * dy);
             }
-            
+
             // Visual feedback for remaining cut length
             const remainingLength = this.maxCutLength - totalLength;
             if (remainingLength > 0) {
@@ -1056,8 +975,8 @@ class VesselGame {
             // Calculate the total length of the current cut
             let totalLength = 0;
             for (let i = 1; i < this.cutPath.length; i++) {
-                const dx = this.cutPath[i].x - this.cutPath[i-1].x;
-                const dy = this.cutPath[i].y - this.cutPath[i-1].y;
+                const dx = this.cutPath[i].x - this.cutPath[i - 1].x;
+                const dy = this.cutPath[i].y - this.cutPath[i - 1].y;
                 totalLength += Math.sqrt(dx * dx + dy * dy);
             }
 
@@ -1066,7 +985,7 @@ class VesselGame {
             const dx = x - lastPoint.x;
             const dy = y - lastPoint.y;
             const newSegmentLength = Math.sqrt(dx * dx + dy * dy);
-            
+
             // Only add the new point if it won't exceed the maximum length
             if (totalLength + newSegmentLength <= this.maxCutLength) {
                 this.cutPath.push({ x, y });
@@ -1206,19 +1125,6 @@ class VesselGame {
         document.getElementById('finalLevel').textContent = this.currentLevel;
         document.getElementById('gameOver').classList.remove('hidden');
         document.getElementById('startScreen').style.display = 'block';
-
-        // Show the download buttons
-        document.getElementById('downloadContainer').classList.remove('hidden');
-    }
-
-    downloadAnalyticsData() {
-        // Create cursor tracking CSV and download
-        const cursorCSV = this.generateCursorCSV();
-        this.downloadCSV(cursorCSV, 'cursor_tracking.csv');
-
-        // Create vessel tracking CSV and download
-        const vesselCSV = this.generateVesselCSV();
-        this.downloadCSV(vesselCSV, 'vessel_tracking.csv');
     }
 
     cleanup() {
@@ -1293,7 +1199,7 @@ function checkConsent() {
     const consentModal = document.getElementById('consentModal');
     const startScreen = document.getElementById('startScreen');
     const levelDisplay = document.getElementById('levelDisplay');
-    
+
     // Show consent modal
     consentModal.classList.remove('hidden');
     // Hide game content
@@ -1325,21 +1231,11 @@ function startNewGame() {
     }
     game = new VesselGame();
     game.startGame();
-
-    // Hide download container when starting a new game
-    document.getElementById('downloadContainer').classList.add('hidden');
 }
 
 function nextLevel() {
     if (game) {
         game.nextLevel();
-    }
-}
-
-// Function to download analytics data
-function downloadAnalytics() {
-    if (game) {
-        game.downloadAnalyticsData();
     }
 }
 

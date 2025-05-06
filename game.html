@@ -162,20 +162,28 @@
         <h1 class="text-4xl font-bold mb-4 text-white">Blood Vessel Cutting Game</h1>
 
         <!-- Hidden background image -->
-        <img id="surgical-background" src="assets/surgical-background.jpg" class="hidden" crossorigin="anonymous" alt="Surgical Background">
+        <img id="surgical-background" src="assets/surgical-background.jpg" class="hidden" crossorigin="anonymous"
+            alt="Surgical Background">
 
         <!-- Consent Form Modal -->
         <div id="consentModal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
             <div class="bg-gray-800 p-8 rounded-lg text-center max-w-2xl mx-4 max-h-[80vh] overflow-y-auto">
                 <h2 class="text-3xl font-bold text-white mb-6">Research Study Consent Form</h2>
-                
+
                 <div class="text-left text-gray-300 mb-6 space-y-4">
-                    <p class="text-lg font-semibold text-white">Title of Study: A serious game to study the effect of limited field of view in keyhole surgery</p>
+                    <p class="text-lg font-semibold text-white">Title of Study: A serious game to study the effect of
+                        limited field of view in keyhole surgery</p>
                     <p>Department: UCL Medical Physics and Biomedical Engineering</p>
-                    <p>Researcher(s): Aayushi Oza (<a href="mailto:aayushi.oza.24@ucl.ac.uk" class="text-blue-600 hover:text-blue-800">aayushi.oza.24@ucl.ac.uk</a>), Stephen Thompson (<a href="mailto:s.thompson@ucl.ac.uk" class="text-blue-600 hover:text-blue-800">s.thompson@ucl.ac.uk</a>)</p>
-                    <p>Principal Researcher: Matthew J. Clarkson (<a href="mailto:m.clarkson@ucl.ac.uk" class="text-blue-600 hover:text-blue-800">m.clarkson@ucl.ac.uk</a>)</p>
-                    <p>UCL Data Protection Officer: Spenser Crouch (<a href="mailto:data-protection@ucl.ac.uk" class="text-blue-600 hover:text-blue-800">data-protection@ucl.ac.uk</a>)</p>
-                    <p>This study has been approved by the UCL Research Ethics Committee: Project ID number: 24249/005b</p>
+                    <p>Researcher(s): Aayushi Oza (<a href="mailto:aayushi.oza.24@ucl.ac.uk"
+                            class="text-blue-600 hover:text-blue-800">aayushi.oza.24@ucl.ac.uk</a>), Stephen Thompson
+                        (<a href="mailto:s.thompson@ucl.ac.uk"
+                            class="text-blue-600 hover:text-blue-800">s.thompson@ucl.ac.uk</a>)</p>
+                    <p>Principal Researcher: Matthew J. Clarkson (<a href="mailto:m.clarkson@ucl.ac.uk"
+                            class="text-blue-600 hover:text-blue-800">m.clarkson@ucl.ac.uk</a>)</p>
+                    <p>UCL Data Protection Officer: Spenser Crouch (<a href="mailto:data-protection@ucl.ac.uk"
+                            class="text-blue-600 hover:text-blue-800">data-protection@ucl.ac.uk</a>)</p>
+                    <p>This study has been approved by the UCL Research Ethics Committee: Project ID number: 24249/005b
+                    </p>
                 </div>
 
                 <div class="text-left text-gray-300 mb-6 space-y-4">
@@ -184,8 +192,10 @@
                         <li>You have read and understood the Information Sheet for the above study</li>
                         <li>You understand that data will be anonymised and cannot be linked to your personal data</li>
                         <li>You understand that all personal information will remain confidential</li>
-                        <li>You understand that you will not be able to withdraw from the study after data collection</li>
-                        <li>You understand that your information may be subject to review by responsible individuals from the University</li>
+                        <li>You understand that you will not be able to withdraw from the study after data collection
+                        </li>
+                        <li>You understand that your information may be subject to review by responsible individuals
+                            from the University</li>
                         <li>You understand that you will not benefit financially from this study</li>
                         <li>You agree that your anonymised research data may be used by others for future research</li>
                         <li>You understand that the information you submit will be published as a report</li>
@@ -193,10 +203,12 @@
                 </div>
 
                 <div class="flex flex-col space-y-4">
-                    <button id="acceptConsent" class="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg text-xl transition duration-200">
+                    <button id="acceptConsent"
+                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg text-xl transition duration-200">
                         I Understand and Agree to Participate
                     </button>
-                    <button id="declineConsent" class="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg text-xl transition duration-200">
+                    <button id="declineConsent"
+                        class="bg-red-500 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg text-xl transition duration-200">
                         I Do Not Agree
                     </button>
                 </div>
@@ -237,7 +249,6 @@
                 <li>Watch for distractions outside your field of view! Click them quickly.</li>
                 <li>In later levels, deal with background distractions like calls and alerts.</li>
                 <li><span class="text-yellow-300">NEW:</span> Audio cues for gameplay events</li>
-                <li><span class="text-yellow-300">NEW:</span> Download your performance data after game</li>
             </ul>
         </div>
 
@@ -270,22 +281,6 @@
                     Alert
                 </div>
             </div>
-        </div>
-
-        <!-- Analytics Download Container (initially hidden) -->
-        <div id="downloadContainer"
-            class="hidden mt-6 bg-white bg-opacity-10 backdrop-blur-sm shadow-2xl p-6 rounded-lg border border-blue-400 border-opacity-30">
-            <h3 class="text-xl font-bold text-white mb-4">Analytics Data</h3>
-            <p class="text-blue-100 mb-4">Download your performance data for analysis</p>
-            <button onclick="downloadAnalytics()"
-                class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-md transition duration-200 flex items-center mx-auto">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Download Data (CSV)
-            </button>
         </div>
 
         <!-- Background Distraction Elements -->
@@ -321,15 +316,6 @@
                 <p class="text-xl text-white mb-2">Final Score: <span id="finalScore">0</span></p>
                 <p class="text-xl text-white mb-4">Level Reached: <span id="finalLevel">1</span></p>
                 <div class="space-y-4">
-                    <button onclick="downloadAnalytics()"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition duration-200 flex items-center mx-auto mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                        </svg>
-                        Download Analytics Data
-                    </button>
                     <button onclick="navigateToFeedback()"
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition duration-200 flex items-center mx-auto mb-4">
                         Feedback
