@@ -1116,25 +1116,60 @@ class VesselGame {
             return '';
         }
         
-        // Define CSV header based on cursor log properties
-        const headers = Object.keys(combinedCursorLog[0]);
+        // Define headers in the same order as Google Sheets
+        const headers = [
+            'TIMESTAMP', 'X_POSITION', 'Y_POSITION', 'IS_CUTTING',
+            'SCORE', 'TIME_LEFT', 'LEVEL', 'FIELD_OF_VIEW',
+            'DISTRACTION_ID', 'DISTRACTION_TYPE', 'DISTRACTION_ACTION'
+        ];
+        
         let csvContent = headers.join(',') + '\n';
         
         // Add each row of data
         combinedCursorLog.forEach(log => {
             const row = headers.map(header => {
-                // Handle nested objects and escape commas in values
-                let value = log[header];
-                if (typeof value === 'object' && value !== null) {
-                    value = JSON.stringify(value);
+                let value;
+                switch(header) {
+                    case 'TIMESTAMP':
+                        value = log.timestamp || new Date().toISOString();
+                        break;
+                    case 'X_POSITION':
+                        value = log.x;
+                        break;
+                    case 'Y_POSITION':
+                        value = log.y;
+                        break;
+                    case 'IS_CUTTING':
+                        value = log.isCutting ? 'TRUE' : 'FALSE';
+                        break;
+                    case 'SCORE':
+                        value = log.score;
+                        break;
+                    case 'TIME_LEFT':
+                        value = log.timeLeft;
+                        break;
+                    case 'LEVEL':
+                        value = log.level;
+                        break;
+                    case 'FIELD_OF_VIEW':
+                        value = log.fieldOfView ? 'TRUE' : 'FALSE';
+                        break;
+                    case 'DISTRACTION_ID':
+                        value = log.distractionId || '';
+                        break;
+                    case 'DISTRACTION_TYPE':
+                        value = log.distractionType || '';
+                        break;
+                    case 'DISTRACTION_ACTION':
+                        value = log.distractionAction || '';
+                        break;
+                    default:
+                        value = '';
                 }
-                // Convert boolean values to strings
-                if (typeof value === 'boolean') {
-                    value = value.toString();
-                }
-                // Escape and quote values with commas
-                if (value && value.toString().includes(',')) {
-                    return `"${value}"`;
+                
+                // Escape and quote values with commas or quotes
+                if (value && (value.toString().includes(',') || value.toString().includes('"'))) {
+                    return `"${value.toString().replace(/"/g, '""')}"`;
                 }
                 return value;
             }).join(',');
@@ -1155,25 +1190,76 @@ class VesselGame {
             return '';
         }
         
-        // Define CSV header based on vessel log properties
-        const headers = Object.keys(combinedVesselLog[0]);
+        // Define headers in the same order as Google Sheets
+        const headers = [
+            'TIMESTAMP', 'VESSEL_ID', 'IS_CORRECT', 'START_X', 'START_Y',
+            'END_X', 'END_Y', 'CONTROL_POINT1_X', 'CONTROL_POINT1_Y',
+            'CONTROL_POINT2_X', 'CONTROL_POINT2_Y', 'PATH_POINTS', 'EVENT',
+            'IS_CUT', 'LEVEL', 'IS_INTERTWINED'
+        ];
+        
         let csvContent = headers.join(',') + '\n';
         
         // Add each row of data
         combinedVesselLog.forEach(log => {
             const row = headers.map(header => {
-                // Handle nested objects and escape commas in values
-                let value = log[header];
-                if (typeof value === 'object' && value !== null) {
-                    value = JSON.stringify(value);
+                let value;
+                switch(header) {
+                    case 'TIMESTAMP':
+                        value = log.timestamp || new Date().toISOString();
+                        break;
+                    case 'VESSEL_ID':
+                        value = log.vesselId;
+                        break;
+                    case 'IS_CORRECT':
+                        value = log.isCorrect ? 'TRUE' : 'FALSE';
+                        break;
+                    case 'START_X':
+                        value = log.startX;
+                        break;
+                    case 'START_Y':
+                        value = log.startY;
+                        break;
+                    case 'END_X':
+                        value = log.endX;
+                        break;
+                    case 'END_Y':
+                        value = log.endY;
+                        break;
+                    case 'CONTROL_POINT1_X':
+                        value = log.cp1x;
+                        break;
+                    case 'CONTROL_POINT1_Y':
+                        value = log.cp1y;
+                        break;
+                    case 'CONTROL_POINT2_X':
+                        value = log.cp2x;
+                        break;
+                    case 'CONTROL_POINT2_Y':
+                        value = log.cp2y;
+                        break;
+                    case 'PATH_POINTS':
+                        value = typeof log.pathPoints === 'string' ? log.pathPoints : JSON.stringify(log.pathPoints);
+                        break;
+                    case 'EVENT':
+                        value = log.event;
+                        break;
+                    case 'IS_CUT':
+                        value = log.isCut ? 'TRUE' : 'FALSE';
+                        break;
+                    case 'LEVEL':
+                        value = log.level;
+                        break;
+                    case 'IS_INTERTWINED':
+                        value = log.intertwined ? 'TRUE' : 'FALSE';
+                        break;
+                    default:
+                        value = '';
                 }
-                // Convert boolean values to strings
-                if (typeof value === 'boolean') {
-                    value = value.toString();
-                }
-                // Escape and quote values with commas
-                if (value && value.toString().includes(',')) {
-                    return `"${value}"`;
+                
+                // Escape and quote values with commas or quotes
+                if (value && (value.toString().includes(',') || value.toString().includes('"'))) {
+                    return `"${value.toString().replace(/"/g, '""')}"`;
                 }
                 return value;
             }).join(',');
