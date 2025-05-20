@@ -46,6 +46,14 @@ class VesselGame {
         };
         this.distractorTimer = null;
 
+        // Load distractor images
+        this.distractorImages = {};
+        const distractorImageTypes = ['blood_leak', 'warning_alert', 'instrument_request'];
+        distractorImageTypes.forEach(type => {
+            this.distractorImages[type] = new Image();
+            this.distractorImages[type].src = `assets/distractors/${type}.png`;
+        });
+
         // Background distractions
         this.backgroundDistractions = {
             calls: { active: false, startTime: null, duration: 0 },
@@ -813,39 +821,61 @@ class VesselGame {
     }
 
     drawDistractor(distractor) {
-        this.ctx.beginPath();
-        this.ctx.arc(distractor.x, distractor.y, distractor.radius, 0, Math.PI * 2);
-        this.ctx.fillStyle = this.colours.distractor[distractor.type] || '#FF00FF';
-        this.ctx.fill();
+        const image = this.distractorImages[distractor.type];
+        if (image && image.complete) {
+            // Calculate image size (30x30 pixels)
+            const size = 30;
+            this.ctx.drawImage(
+                image,
+                distractor.x - size/2,
+                distractor.y - size/2,
+                size,
+                size
+            );
 
-        // Add a pulsing effect for attention
-        const pulseSize = 5 * Math.sin(Date.now() / 200) + distractor.radius;
-        this.ctx.beginPath();
-        this.ctx.arc(distractor.x, distractor.y, pulseSize, 0, Math.PI * 2);
-        this.ctx.strokeStyle = this.colours.distractor[distractor.type] || '#FF00FF';
-        this.ctx.lineWidth = 2;
-        this.ctx.stroke();
+            // Add a pulsing effect for attention
+            const pulseSize = 5 * Math.sin(Date.now() / 200) + size/2;
+            this.ctx.beginPath();
+            this.ctx.arc(distractor.x, distractor.y, pulseSize, 0, Math.PI * 2);
+            this.ctx.strokeStyle = this.colours.distractor[distractor.type] || '#FF00FF';
+            this.ctx.lineWidth = 2;
+            this.ctx.stroke();
+        } else {
+            // Fallback to original drawing if image not loaded
+            this.ctx.beginPath();
+            this.ctx.arc(distractor.x, distractor.y, distractor.radius, 0, Math.PI * 2);
+            this.ctx.fillStyle = this.colours.distractor[distractor.type] || '#FF00FF';
+            this.ctx.fill();
 
-        // Draw icon or symbol based on type
-        this.ctx.fillStyle = '#FFFFFF';
-        this.ctx.font = '12px Arial';
-        this.ctx.textAlign = 'center';
-        this.ctx.textBaseline = 'middle';
+            // Add a pulsing effect for attention
+            const pulseSize = 5 * Math.sin(Date.now() / 200) + distractor.radius;
+            this.ctx.beginPath();
+            this.ctx.arc(distractor.x, distractor.y, pulseSize, 0, Math.PI * 2);
+            this.ctx.strokeStyle = this.colours.distractor[distractor.type] || '#FF00FF';
+            this.ctx.lineWidth = 2;
+            this.ctx.stroke();
 
-        let symbol = '!';
-        switch (distractor.type) {
-            case 'blood_leak':
-                symbol = '⚠';
-                break;
-            case 'warning_alert':
-                symbol = '!';
-                break;
-            case 'instrument_request':
-                symbol = '?';
-                break;
+            // Draw icon or symbol based on type
+            this.ctx.fillStyle = '#FFFFFF';
+            this.ctx.font = '12px Arial';
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+
+            let symbol = '!';
+            switch (distractor.type) {
+                case 'blood_leak':
+                    symbol = '⚠';
+                    break;
+                case 'warning_alert':
+                    symbol = '!';
+                    break;
+                case 'instrument_request':
+                    symbol = '?';
+                    break;
+            }
+
+            this.ctx.fillText(symbol, distractor.x, distractor.y);
         }
-
-        this.ctx.fillText(symbol, distractor.x, distractor.y);
     }
 
     drawBackgroundDistractionIndicators() {
