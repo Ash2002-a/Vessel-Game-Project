@@ -1026,8 +1026,8 @@ class VesselGame {
                     this.showFeedback("Correct! +10", vessel.start.x, vessel.start.y, '#00FF00');
                     // this.playCorrectCutSound();
                 } else {
-                    this.score -= 5;
-                    this.showFeedback("Incorrect! -5", vessel.start.x, vessel.start.y, '#FF0000');
+                    this.score -= 50;
+                    this.showFeedback("Incorrect! -50", vessel.start.x, vessel.start.y, '#FF0000');
                     this.playWrongCutSound();
                 }
             }
