@@ -98,14 +98,31 @@ class VesselGame {
             }
         };
 
+        // Add keyboard control state
+        this.keyState = {
+            ArrowUp: false,
+            ArrowDown: false,
+            ArrowLeft: false,
+            ArrowRight: false,
+            w: false,
+            a: false,
+            s: false,
+            d: false
+        };
+        this.fovSpeed = 20; // faster FOV movement
+
         // Bind events
         this.bindEvents();
 
         this.cursorPos = { x: 0, y: 0 };
+        this.fovPos = { x: 0, y: 0 }; // Separate FOV position
 
         this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
+        // Add keyboard event listeners with passive: false to ensure preventDefault works
+        window.addEventListener('keydown', this.handleKeyDown.bind(this), { passive: false });
+        window.addEventListener('keyup', this.handleKeyUp.bind(this), { passive: false });
 
-        // Initialize Tone.js sounds
+        // Initialise Tone.js sounds
         this.initToneSounds();
     }
 
@@ -302,6 +319,14 @@ class VesselGame {
         this.trackingInterval = setInterval(() => {
             this.sendTrackingData();
         }, 10000);
+
+        // Add game loop for FOV movement
+        this.gameLoop = setInterval(() => {
+            if (this.gameStarted && !this.gameOver) {
+                this.updateFOVPosition();
+                this.drawAll();
+            }
+        }, 1000 / 60); // 60 FPS
     }
 
     resetGame() {
@@ -681,7 +706,7 @@ class VesselGame {
     logVesselEvent(vessel, event) {
         const timestamp = new Date().toISOString();
 
-        // Serialize the path points to a JSON string for storage
+        // Serialise the path points to a JSON string for storage
         const pathPointsString = JSON.stringify(vessel.points.map(pt => ({ x: pt.x, y: pt.y })));
 
         const vesselData = {
@@ -720,10 +745,10 @@ class VesselGame {
             this.ctx.fillStyle = 'rgba(0, 0, 0, 1)';
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-            // Create spotlight effect
+            // Create spotlight effect centered on FOV position
             this.ctx.save();
             this.ctx.beginPath();
-            this.ctx.arc(this.cursorPos.x, this.cursorPos.y, this.fieldOfView.radius, 0, Math.PI * 2);
+            this.ctx.arc(this.fovPos.x, this.fovPos.y, this.fieldOfView.radius, 0, Math.PI * 2);
             this.ctx.clip();
 
             // Draw background image in spotlight if loaded
@@ -840,6 +865,27 @@ class VesselGame {
             this.ctx.strokeStyle = this.colours.distractor[distractor.type] || '#FF00FF';
             this.ctx.lineWidth = 2;
             this.ctx.stroke();
+
+            // Always draw label with background
+            const label = this.getDistractorLabel(distractor.type);
+            this.ctx.font = '14px Arial';
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            
+            // Draw label background
+            const textWidth = this.ctx.measureText(label).width;
+            const padding = 8;
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            this.ctx.fillRect(
+                distractor.x - textWidth/2 - padding,
+                distractor.y + size/2 + 5,
+                textWidth + padding * 2,
+                24
+            );
+            
+            // Draw label text
+            this.ctx.fillStyle = '#FFFFFF';
+            this.ctx.fillText(label, distractor.x, distractor.y + size/2 + 20);
         } else {
             // Fallback to original drawing if image not loaded
             this.ctx.beginPath();
@@ -875,6 +921,39 @@ class VesselGame {
             }
 
             this.ctx.fillText(symbol, distractor.x, distractor.y);
+
+            // Always draw label with background for fallback case too
+            const label = this.getDistractorLabel(distractor.type);
+            this.ctx.font = '14px Arial';
+            
+            // Draw label background
+            const textWidth = this.ctx.measureText(label).width;
+            const padding = 8;
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            this.ctx.fillRect(
+                distractor.x - textWidth/2 - padding,
+                distractor.y + distractor.radius + 5,
+                textWidth + padding * 2,
+                24
+            );
+            
+            // Draw label text
+            this.ctx.fillStyle = '#FFFFFF';
+            this.ctx.fillText(label, distractor.x, distractor.y + distractor.radius + 20);
+        }
+    }
+
+    // Helper function to get distractor label
+    getDistractorLabel(type) {
+        switch (type) {
+            case 'blood_leak':
+                return 'Blood Leak';
+            case 'warning_alert':
+                return 'Warning Alert';
+            case 'instrument_request':
+                return 'Instrument Request';
+            default:
+                return 'Alert';
         }
     }
 
@@ -961,7 +1040,13 @@ class VesselGame {
                 const dy = y - distractor.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance <= distractor.radius) {
+                // Check if distractor is within field of view
+                const fovDx = distractor.x - this.fovPos.x;
+                const fovDy = distractor.y - this.fovPos.y;
+                const fovDistance = Math.sqrt(fovDx * fovDx + fovDy * fovDy);
+
+                // Only allow clicking if distractor is within FOV radius
+                if (distance <= distractor.radius && fovDistance <= this.fieldOfView.radius) {
                     this.handleDistractorClick(distractor);
                     // Remove clicked distractors after a short delay
                     setTimeout(() => {
@@ -1407,6 +1492,62 @@ class VesselGame {
                 this.stopBackgroundDistraction(type);
             }
         }
+
+        if (this.gameLoop) clearInterval(this.gameLoop);
+    }
+
+    // Add keyboard event handlers
+    handleKeyDown(event) {
+        // Prevent default behavior for arrow keys and WASD
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd'].includes(event.key.toLowerCase())) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        
+        const key = event.key.toLowerCase();
+        if (this.keyState.hasOwnProperty(key)) {
+            this.keyState[key] = true;
+        }
+    }
+
+    handleKeyUp(event) {
+        // Prevent default behavior for arrow keys and WASD
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd'].includes(event.key.toLowerCase())) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        
+        const key = event.key.toLowerCase();
+        if (this.keyState.hasOwnProperty(key)) {
+            this.keyState[key] = false;
+        }
+    }
+
+    // Update FOV position based on keyboard input
+    updateFOVPosition() {
+        if (!this.gameStarted || this.gameOver) return;
+
+        let dx = 0;
+        let dy = 0;
+
+        // Check both arrow keys and WASD
+        if (this.keyState.ArrowUp || this.keyState.w) dy -= this.fovSpeed;
+        if (this.keyState.ArrowDown || this.keyState.s) dy += this.fovSpeed;
+        if (this.keyState.ArrowLeft || this.keyState.a) dx -= this.fovSpeed;
+        if (this.keyState.ArrowRight || this.keyState.d) dx += this.fovSpeed;
+
+        // Update FOV position
+        this.fovPos.x += dx;
+        this.fovPos.y += dy;
+
+        // Keep FOV within canvas bounds
+        this.fovPos.x = Math.max(0, Math.min(this.canvas.width, this.fovPos.x));
+        this.fovPos.y = Math.max(0, Math.min(this.canvas.height, this.fovPos.y));
+
+        // Log FOV movement
+        if (dx !== 0 || dy !== 0) {
+            this.logCursorPosition(this.fovPos.x, this.fovPos.y, false);
+        }
     }
 }
 
@@ -1423,6 +1564,8 @@ function acceptConsent() {
     // Show the game content
     document.getElementById('startScreen').classList.remove('hidden');
     document.getElementById('levelDisplay').classList.remove('hidden');
+    // Scroll to top of page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function declineConsent() {
@@ -1456,7 +1599,7 @@ function checkConsent() {
     levelDisplay.classList.add('hidden');
 }
 
-// Initialize everything when the DOM is loaded
+// Initialise everything when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded, setting up consent handlers');
     // Add event listeners for consent buttons
@@ -1491,4 +1634,92 @@ function nextLevel() {
 function navigateToFeedback() {
     // Navigate to the feedback page
     window.location.href = 'feedback.html';
+}
+
+// Tutorial handling
+let currentTutorialStep = 1;
+const totalTutorialSteps = 3;
+
+function showTutorial() {
+    document.getElementById('tutorialOverlay').classList.remove('hidden');
+    updateTutorialStep();
+}
+
+function updateTutorialStep() {
+    // Hide all steps
+    document.querySelectorAll('.tutorial-step').forEach(step => {
+        step.classList.add('hidden');
+    });
+    
+    // Show current step
+    document.querySelector(`.tutorial-step[data-step="${currentTutorialStep}"]`).classList.remove('hidden');
+    
+    // Update dots
+    document.querySelectorAll('.tutorial-dot').forEach(dot => {
+        dot.classList.remove('bg-green-500');
+        dot.classList.add('bg-gray-600');
+    });
+    document.querySelector(`.tutorial-dot[data-step="${currentTutorialStep}"]`).classList.remove('bg-gray-600');
+    document.querySelector(`.tutorial-dot[data-step="${currentTutorialStep}"]`).classList.add('bg-green-500');
+    
+    // Update buttons
+    const prevButton = document.getElementById('prevTutorialStep');
+    prevButton.textContent = currentTutorialStep === 1 ? 'Back to Home' : 'Previous';
+    prevButton.disabled = false;
+    
+    document.getElementById('nextTutorialStep').textContent = currentTutorialStep === totalTutorialSteps ? 'Start Game' : 'Next';
+}
+
+// Alert prompt handling
+function showAlertPrompt(message) {
+    const overlay = document.getElementById('alertPromptOverlay');
+    const content = document.getElementById('alertPromptContent');
+    content.textContent = message;
+    overlay.classList.remove('hidden');
+}
+
+// Event listeners for tutorial
+document.getElementById('prevTutorialStep').addEventListener('click', () => {
+    if (currentTutorialStep === 1) {
+        // Navigate to home screen
+        window.location.href = 'index.html';
+    } else {
+        currentTutorialStep--;
+        updateTutorialStep();
+    }
+});
+
+document.getElementById('nextTutorialStep').addEventListener('click', () => {
+    if (currentTutorialStep < totalTutorialSteps) {
+        currentTutorialStep++;
+        updateTutorialStep();
+    } else {
+        document.getElementById('tutorialOverlay').classList.add('hidden');
+        // Start the actual game
+        if (game) {
+            game.cleanup();
+        }
+        game = new VesselGame();
+        game.startGame();
+        // Scroll to game canvas
+        const gameCanvas = document.getElementById('gameCanvas');
+        gameCanvas.scrollIntoView({ behavior: 'smooth' });
+    }
+});
+
+document.getElementById('alertPromptClose').addEventListener('click', () => {
+    document.getElementById('alertPromptOverlay').classList.add('hidden');
+});
+
+// Add alert prompts for first-time events
+function showFirstTimeAlert(type) {
+    const alerts = {
+        'call': '📞 Incoming Call! Click to answer the call.',
+        'heart': '❤️ Heart Rate Alert! Click to acknowledge the warning.',
+        'voice': '🔊 Voice Command! Listen carefully to the instructions.'
+    };
+    
+    if (alerts[type]) {
+        showAlertPrompt(alerts[type]);
+    }
 }
