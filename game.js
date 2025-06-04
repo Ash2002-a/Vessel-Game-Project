@@ -98,31 +98,14 @@ class VesselGame {
             }
         };
 
-        // Add keyboard control state
-        this.keyState = {
-            ArrowUp: false,
-            ArrowDown: false,
-            ArrowLeft: false,
-            ArrowRight: false,
-            w: false,
-            a: false,
-            s: false,
-            d: false
-        };
-        this.fovSpeed = 20; // faster FOV movement
-
         // Bind events
         this.bindEvents();
 
         this.cursorPos = { x: 0, y: 0 };
-        this.fovPos = { x: 0, y: 0 }; // Separate FOV position
 
         this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
-        // Add keyboard event listeners with passive: false to ensure preventDefault works
-        window.addEventListener('keydown', this.handleKeyDown.bind(this), { passive: false });
-        window.addEventListener('keyup', this.handleKeyUp.bind(this), { passive: false });
 
-        // Initialise Tone.js sounds
+        // Initialize Tone.js sounds
         this.initToneSounds();
     }
 
@@ -319,14 +302,6 @@ class VesselGame {
         this.trackingInterval = setInterval(() => {
             this.sendTrackingData();
         }, 10000);
-
-        // Add game loop for FOV movement
-        this.gameLoop = setInterval(() => {
-            if (this.gameStarted && !this.gameOver) {
-                this.updateFOVPosition();
-                this.drawAll();
-            }
-        }, 1000 / 60); // 60 FPS
     }
 
     resetGame() {
@@ -706,7 +681,7 @@ class VesselGame {
     logVesselEvent(vessel, event) {
         const timestamp = new Date().toISOString();
 
-        // Serialise the path points to a JSON string for storage
+        // Serialize the path points to a JSON string for storage
         const pathPointsString = JSON.stringify(vessel.points.map(pt => ({ x: pt.x, y: pt.y })));
 
         const vesselData = {
@@ -745,10 +720,10 @@ class VesselGame {
             this.ctx.fillStyle = 'rgba(0, 0, 0, 1)';
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-            // Create spotlight effect centered on FOV position
+            // Create spotlight effect
             this.ctx.save();
             this.ctx.beginPath();
-            this.ctx.arc(this.fovPos.x, this.fovPos.y, this.fieldOfView.radius, 0, Math.PI * 2);
+            this.ctx.arc(this.cursorPos.x, this.cursorPos.y, this.fieldOfView.radius, 0, Math.PI * 2);
             this.ctx.clip();
 
             // Draw background image in spotlight if loaded
@@ -866,7 +841,7 @@ class VesselGame {
             this.ctx.lineWidth = 2;
             this.ctx.stroke();
 
-            // Always draw label with background
+            // Add label with background
             const label = this.getDistractorLabel(distractor.type);
             this.ctx.font = '14px Arial';
             this.ctx.textAlign = 'center';
@@ -921,25 +896,6 @@ class VesselGame {
             }
 
             this.ctx.fillText(symbol, distractor.x, distractor.y);
-
-            // Always draw label with background for fallback case too
-            const label = this.getDistractorLabel(distractor.type);
-            this.ctx.font = '14px Arial';
-            
-            // Draw label background
-            const textWidth = this.ctx.measureText(label).width;
-            const padding = 8;
-            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-            this.ctx.fillRect(
-                distractor.x - textWidth/2 - padding,
-                distractor.y + distractor.radius + 5,
-                textWidth + padding * 2,
-                24
-            );
-            
-            // Draw label text
-            this.ctx.fillStyle = '#FFFFFF';
-            this.ctx.fillText(label, distractor.x, distractor.y + distractor.radius + 20);
         }
     }
 
@@ -1040,13 +996,7 @@ class VesselGame {
                 const dy = y - distractor.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
 
-                // Check if distractor is within field of view
-                const fovDx = distractor.x - this.fovPos.x;
-                const fovDy = distractor.y - this.fovPos.y;
-                const fovDistance = Math.sqrt(fovDx * fovDx + fovDy * fovDy);
-
-                // Only allow clicking if distractor is within FOV radius
-                if (distance <= distractor.radius && fovDistance <= this.fieldOfView.radius) {
+                if (distance <= distractor.radius) {
                     this.handleDistractorClick(distractor);
                     // Remove clicked distractors after a short delay
                     setTimeout(() => {
@@ -1492,62 +1442,6 @@ class VesselGame {
                 this.stopBackgroundDistraction(type);
             }
         }
-
-        if (this.gameLoop) clearInterval(this.gameLoop);
-    }
-
-    // Add keyboard event handlers
-    handleKeyDown(event) {
-        // Prevent default behavior for arrow keys and WASD
-        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd'].includes(event.key.toLowerCase())) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        
-        const key = event.key.toLowerCase();
-        if (this.keyState.hasOwnProperty(key)) {
-            this.keyState[key] = true;
-        }
-    }
-
-    handleKeyUp(event) {
-        // Prevent default behavior for arrow keys and WASD
-        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'w', 'a', 's', 'd'].includes(event.key.toLowerCase())) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        
-        const key = event.key.toLowerCase();
-        if (this.keyState.hasOwnProperty(key)) {
-            this.keyState[key] = false;
-        }
-    }
-
-    // Update FOV position based on keyboard input
-    updateFOVPosition() {
-        if (!this.gameStarted || this.gameOver) return;
-
-        let dx = 0;
-        let dy = 0;
-
-        // Check both arrow keys and WASD
-        if (this.keyState.ArrowUp || this.keyState.w) dy -= this.fovSpeed;
-        if (this.keyState.ArrowDown || this.keyState.s) dy += this.fovSpeed;
-        if (this.keyState.ArrowLeft || this.keyState.a) dx -= this.fovSpeed;
-        if (this.keyState.ArrowRight || this.keyState.d) dx += this.fovSpeed;
-
-        // Update FOV position
-        this.fovPos.x += dx;
-        this.fovPos.y += dy;
-
-        // Keep FOV within canvas bounds
-        this.fovPos.x = Math.max(0, Math.min(this.canvas.width, this.fovPos.x));
-        this.fovPos.y = Math.max(0, Math.min(this.canvas.height, this.fovPos.y));
-
-        // Log FOV movement
-        if (dx !== 0 || dy !== 0) {
-            this.logCursorPosition(this.fovPos.x, this.fovPos.y, false);
-        }
     }
 }
 
@@ -1564,7 +1458,8 @@ function acceptConsent() {
     // Show the game content
     document.getElementById('startScreen').classList.remove('hidden');
     document.getElementById('levelDisplay').classList.remove('hidden');
-    // Scroll to top of page
+    
+    // Smooth scroll to top of page
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1599,7 +1494,7 @@ function checkConsent() {
     levelDisplay.classList.add('hidden');
 }
 
-// Initialise everything when the DOM is loaded
+// Initialize everything when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded, setting up consent handlers');
     // Add event listeners for consent buttons
@@ -1701,9 +1596,10 @@ document.getElementById('nextTutorialStep').addEventListener('click', () => {
         }
         game = new VesselGame();
         game.startGame();
-        // Scroll to game canvas
+        
+        // Smooth scroll to game canvas
         const gameCanvas = document.getElementById('gameCanvas');
-        gameCanvas.scrollIntoView({ behavior: 'smooth' });
+        gameCanvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 });
 
