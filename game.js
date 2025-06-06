@@ -1513,6 +1513,9 @@ function startNewGame() {
         return;
     }
 
+    // Hide the game over screen
+    document.getElementById('gameOver').classList.add('hidden');
+
     if (game) {
         game.cleanup();
     }
