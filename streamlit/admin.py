@@ -529,10 +529,10 @@ st.sidebar.title("Navigation")
 selected_page = st.sidebar.radio(
     "Go to",
     ["Data Upload", "Aggregate Analysis", "Instrument Efficiency", "Task Completion",
-        "Peripheral Awareness", "Distraction Management", "User Comparison", "Export Report"]
+        "Peripheral Awareness", "Distraction Management", "User Comparison", "Surgeon Experience Analysis", "Export Report"]
 )
 
-# Initialize session state for storing data
+# Initialise session state for storing data
 if 'user_data' not in st.session_state:
     st.session_state.user_data = {}
 if 'aggregated' not in st.session_state:
@@ -693,11 +693,11 @@ if selected_page == "Data Upload":
             except Exception as e:
                 st.error(f"Error processing ZIP file: {str(e)}")
 
-# Check if data is ready for analysis
-if selected_page != "Data Upload" and not st.session_state.user_data:
+# Check if data is ready for analysis (excluding Surgeon Experience Analysis page)
+if selected_page not in ["Data Upload", "Surgeon Experience Analysis"] and not st.session_state.user_data:
     st.warning("Please upload user data first on the Data Upload page.")
     st.stop()
-elif selected_page != "Data Upload" and not st.session_state.aggregated:
+elif selected_page not in ["Data Upload", "Surgeon Experience Analysis"] and not st.session_state.aggregated:
     st.warning("Please process the data for analysis on the Data Upload page.")
     st.stop()
 
@@ -780,7 +780,7 @@ if selected_page == "Aggregate Analysis":
         }
 
         selected_metric = st.selectbox(
-            "Select Metric to Visualize",
+            "Select Metric to Visualise",
             metric_options,
             format_func=lambda x: metric_labels[x],
             key="dist_metric"
@@ -893,7 +893,7 @@ elif selected_page == "Instrument Efficiency":
             st.subheader("Movement Metrics by User")
             st.dataframe(user_movement)
 
-            # Visualization of movement by user
+            # Visualisation of movement by user
             fig = px.bar(
                 user_movement,
                 x='User ID',
@@ -1061,7 +1061,7 @@ elif selected_page == "Instrument Efficiency":
             st.info("No movement data available for analysis")
 
     except Exception as e:
-        st.error(f"Error analyzing instrument efficiency: {str(e)}")
+        st.error(f"Error analysing instrument efficiency: {str(e)}")
         st.error(f"Detailed error info: {type(e).__name__}")
         import traceback
         st.code(traceback.format_exc())
@@ -1133,7 +1133,7 @@ elif selected_page == "Task Completion":
             st.subheader("Success Rate by User")
             st.dataframe(user_success)
 
-            # Visualization of success rate by user
+            # Visualisation of success rate by user
             fig = px.bar(
                 user_success,
                 x='User ID',
@@ -1271,7 +1271,7 @@ elif selected_page == "Task Completion":
             st.info("No vessel data available for analysis")
 
     except Exception as e:
-        st.error(f"Error analyzing task completion time: {str(e)}")
+        st.error(f"Error analysing task completion time: {str(e)}")
 
 # Peripheral Awareness Analysis
 elif selected_page == "Peripheral Awareness":
@@ -1349,7 +1349,7 @@ elif selected_page == "Peripheral Awareness":
             st.subheader("Response Rate by User")
             st.dataframe(user_response)
 
-            # Visualization of response rate by user
+            # Visualisation of response rate by user
             fig = px.bar(
                 user_response,
                 x='User ID',
@@ -1407,7 +1407,7 @@ elif selected_page == "Peripheral Awareness":
                     st.subheader("Response Time by User")
                     st.dataframe(user_response_time)
 
-                    # Visualization of response time by user
+                    # Visualisation of response time by user
                     fig = px.bar(
                         user_response_time,
                         x='User ID',
@@ -1533,7 +1533,7 @@ elif selected_page == "Peripheral Awareness":
             st.info("No distraction data available for analysis")
 
     except Exception as e:
-        st.error(f"Error analyzing peripheral awareness: {str(e)}")
+        st.error(f"Error analysing peripheral awareness: {str(e)}")
 
 # Distraction Management Analysis
 elif selected_page == "Distraction Management":
@@ -1620,7 +1620,7 @@ elif selected_page == "Distraction Management":
                     avg_error_ratio) else "N/A")
                 st.caption("Error rate during distractions vs normal")
 
-            # Visualize distraction impact by user
+            # Visualise distraction impact by user
             st.subheader("Distraction Impact by User")
 
             # Movement impact
@@ -1681,7 +1681,7 @@ elif selected_page == "Distraction Management":
             # Distraction impact ratios
             st.subheader("Distraction Impact Ratios by User")
 
-            # Ensure both columns exist for visualization
+            # Ensure both columns exist for visualisation
             ratio_columns = ['USER_ID']
             if 'movement_ratio' in background_df.columns:
                 ratio_columns.append('movement_ratio')
@@ -1702,7 +1702,7 @@ elif selected_page == "Distraction Management":
 
             st.dataframe(ratio_df)
 
-            # Visualize ratios if we have both types
+            # Visualise ratios if we have both types
             if 'Movement Impact Ratio' in ratio_df.columns and 'Error Rate Impact Ratio' in ratio_df.columns:
                 ratio_melt = pd.melt(
                     ratio_df,
@@ -1726,7 +1726,7 @@ elif selected_page == "Distraction Management":
                 fig.add_hline(y=1, line_dash="dash", line_color="gray")
                 st.plotly_chart(fig, use_container_width=True)
 
-            # Analyze impact by distraction type
+            # Analyse impact by distraction type
             st.subheader("Impact Analysis by Distraction Type")
 
             # Collect distraction type metrics from all users
@@ -1904,7 +1904,7 @@ elif selected_page == "Distraction Management":
             st.info("No background distraction data available for analysis")
 
     except Exception as e:
-        st.error(f"Error analyzing distraction management: {str(e)}")
+        st.error(f"Error analysing distraction management: {str(e)}")
         st.error(f"Detailed error info: {type(e).__name__}")
         import traceback
         st.code(traceback.format_exc())
@@ -1945,7 +1945,7 @@ elif selected_page == "User Comparison":
                 # Radar chart of metrics
                 st.subheader("Multi-dimensional Performance Comparison")
 
-                # Normalize metrics for radar chart
+                # Normalise metrics for radar chart
                 metrics_to_normalize = [
                     'avg_movement', 'avg_task_time', 'success_rate',
                     'distraction_response_rate', 'distraction_response_time'
@@ -1995,7 +1995,7 @@ elif selected_page == "User Comparison":
                     ))
 
                 fig.update_layout(
-                    title="Performance Radar Chart (Normalized Values - Higher is Better)",
+                    title="Performance Radar Chart (Normalised Values - Higher is Better)",
                     polar=dict(
                         radialaxis=dict(
                             visible=True,
@@ -2125,6 +2125,500 @@ elif selected_page == "User Comparison":
             st.info("Need at least two users for comparison")
     else:
         st.info("No user data available for comparison")
+
+# Surgeon Experience Analysis
+elif selected_page == "Surgeon Experience Analysis":
+    
+
+    # Initialise session state for surgeon experience data
+    if 'surgeon_experience' not in st.session_state:
+        st.session_state.surgeon_experience = None
+
+    # File upload section
+    st.subheader("Upload Surgeon Experience Data")
+    st.markdown("""
+    Upload a CSV file with the following columns:
+    - **TimeStamp**: When the experience data was recorded
+    - **UUID**: Unique identifier matching the user IDs from the game data
+    - **Experience**: Experience level as numerical value (1=1-5 years, 2=6-10 years, 3=11-15 years, 4=15+ years)
+    """)
+
+    experience_file = st.file_uploader(
+        "Upload Surgeon Experience CSV", 
+        type=["csv"], 
+        key="surgeon_experience_upload"
+    )
+
+    if experience_file is not None:
+        if st.button("Process Experience Data"):
+            try:
+                # Read the experience data
+                experience_data = pd.read_csv(experience_file)
+                
+                # Validate required columns
+                required_columns = ['TimeStamp', 'UUID', 'Experience']
+                missing_columns = [col for col in required_columns if col not in experience_data.columns]
+                
+                if missing_columns:
+                    st.error(f"Missing required columns: {missing_columns}")
+                else:
+                    # Process the data
+                    experience_data['TimeStamp'] = pd.to_datetime(experience_data['TimeStamp'])
+                    st.session_state.surgeon_experience = experience_data
+                    st.success(f"Successfully loaded experience data for {len(experience_data)} surgeons")
+                    
+                    # Show preview of the data
+                    st.subheader("Experience Data Preview")
+                    st.dataframe(experience_data.head())
+
+            except Exception as e:
+                st.error(f"Error processing experience file: {str(e)}")
+
+    # Analysis section
+    if st.session_state.surgeon_experience is not None:
+        st.subheader("Experience vs Performance Analysis")
+        
+        experience_df = st.session_state.surgeon_experience.copy()
+        
+        # Create performance metrics table
+        performance_metrics = []
+        
+        # Check if we have user data uploaded
+        if st.session_state.user_data:
+            st.markdown("### Performance Metrics by Surgeon Experience")
+            
+            # Extract performance data for each UUID in experience data
+            for _, exp_row in experience_df.iterrows():
+                uuid = exp_row['UUID']
+                experience_level = exp_row['Experience']
+                
+                # Initialise metrics with default values
+                metrics = {
+                    'UUID': uuid,
+                    'Experience_Level': experience_level,
+                    'Instrument_Efficiency': None,  # Average movement
+                    'Task_Completion_Time': None,   # Average task time
+                    'Peripheral_Awareness': None,   # Distraction response time
+                    'Distraction_Management': None  # Movement ratio during distractions
+                }
+                
+                # Try to find matching user data
+                user_data = st.session_state.user_data.get(uuid)
+                if user_data and 'summary' in user_data:
+                    summary = user_data['summary']
+                    
+                    # Extract metrics for the 4 objectives
+                    metrics['Instrument_Efficiency'] = summary.get('avg_movement', None)
+                    metrics['Task_Completion_Time'] = summary.get('avg_task_time', None)
+                    metrics['Peripheral_Awareness'] = summary.get('distraction_response_time', None)
+                    metrics['Distraction_Management'] = summary.get('movement_ratio', None)
+                
+                performance_metrics.append(metrics)
+            
+            # Create performance table
+            if performance_metrics:
+                performance_df = pd.DataFrame(performance_metrics)
+                
+                # Define metric labels at the top for use throughout the analysis
+                metric_labels = {
+                    'Instrument_Efficiency': 'Objective 1: Instrument Efficiency (Avg Movement in px)',
+                    'Task_Completion_Time': 'Objective 2: Task Completion Time (Avg Time in seconds)',
+                    'Peripheral_Awareness': 'Objective 3: Peripheral Awareness (Response Time in seconds)',
+                    'Distraction_Management': 'Objective 4: Distraction Management (Movement Impact Ratio)'
+                }
+                
+                # Format the table for display
+                display_df = performance_df.copy()
+                
+                # Round numerical values for better display
+                numeric_columns = ['Instrument_Efficiency', 'Task_Completion_Time', 
+                                 'Peripheral_Awareness', 'Distraction_Management']
+                
+                for col in numeric_columns:
+                    display_df[col] = display_df[col].apply(
+                        lambda x: f"{x:.2f}" if pd.notnull(x) else "No Data"
+                    )
+                
+                # Rename columns for better readability
+                display_df.columns = [
+                    'UUID', 'Experience Level', 
+                    'Avg Movement (px)', 'Avg Task Time (s)', 
+                    'Avg Response Time (s)', 'Movement Impact Ratio'
+                ]
+                
+                st.dataframe(display_df, use_container_width=True)
+                
+                # Statistical analysis
+                st.subheader("Statistical Analysis by Experience Level")
+                
+                # Create readable experience labels
+                experience_labels = {
+                    1: '1-5 years (Novice)',
+                    2: '6-10 years', 
+                    3: '11-15 years',
+                    4: '15+ years (Expert)'
+                }
+                
+                # Group by experience level and calculate averages
+                numeric_df = performance_df.copy()
+                for col in numeric_columns:
+                    numeric_df[col] = pd.to_numeric(numeric_df[col], errors='coerce')
+                
+                # Convert experience to numerical and create labels
+                numeric_df['Experience_Numeric'] = pd.to_numeric(numeric_df['Experience_Level'], errors='coerce')
+                numeric_df['Experience_Label'] = numeric_df['Experience_Numeric'].map(experience_labels)
+                numeric_df['Experience_Label'] = numeric_df['Experience_Label'].fillna(numeric_df['Experience_Level'])
+                
+                # Group by experience label and calculate only mean and count
+                experience_stats = numeric_df.groupby('Experience_Label')[numeric_columns].agg(['mean', 'count']).round(2)
+                
+                # Flatten column names
+                experience_stats.columns = [f"{col[0]}_{col[1]}" for col in experience_stats.columns]
+                experience_stats = experience_stats.reset_index()
+                
+                # Rename columns for better clarity
+                new_column_names = {'Experience_Label': 'Experience Level'}
+                for col in numeric_columns:
+                    metric_name = metric_labels.get(col, col)
+                    new_column_names[f'{col}_mean'] = f'{metric_name} (Average)'
+                    new_column_names[f'{col}_count'] = f'{metric_name} (Count)'
+                
+                experience_stats = experience_stats.rename(columns=new_column_names)
+                
+                # Ensure proper ordering
+                level_order = ['1-5 years (Novice)', '6-10 years', '11-15 years', '15+ years (Expert)']
+                experience_stats['Experience Level'] = pd.Categorical(experience_stats['Experience Level'], categories=level_order, ordered=True)
+                experience_stats = experience_stats.sort_values('Experience Level')
+                
+                st.dataframe(experience_stats, use_container_width=True)
+                
+                # Visualisations
+                st.subheader("Performance Analysis Across the Four Study Objectives")
+                
+                # Create comprehensive visualisations for all 4 objectives
+                metric_labels = {
+                    'Instrument_Efficiency': 'Objective 1: Instrument Efficiency (Avg Movement in px)',
+                    'Task_Completion_Time': 'Objective 2: Task Completion Time (Avg Time in seconds)',
+                    'Peripheral_Awareness': 'Objective 3: Peripheral Awareness (Response Time in seconds)',
+                    'Distraction_Management': 'Objective 4: Distraction Management (Movement Impact Ratio)'
+                }
+                
+                # Overview: All 4 objectives in one comprehensive view
+                st.markdown("### Complete Performance Overview")
+                
+                # Create a comprehensive heatmap showing all metrics by experience level
+                heatmap_data = numeric_df.groupby('Experience_Label')[numeric_columns].mean().round(2)
+                
+                # Ensure proper ordering
+                level_order = ['1-5 years (Novice)', '6-10 years', '11-15 years', '15+ years (Expert)']
+                heatmap_data = heatmap_data.reindex(level_order)
+                
+                # Rename columns for heatmap
+                heatmap_data.columns = [
+                    'Obj 1: Instrument\nEfficiency (px)',
+                    'Obj 2: Task Time\n(seconds)', 
+                    'Obj 3: Peripheral\nAwareness (s)',
+                    'Obj 4: Distraction\nManagement (ratio)'
+                ]
+                
+                if not heatmap_data.empty:
+                    fig = px.imshow(
+                        heatmap_data.T,
+                        x=heatmap_data.index,
+                        y=heatmap_data.columns,
+                        color_continuous_scale='RdYlBu_r',
+                        title='Performance Heatmap: All Four Objectives by Experience Level',
+                        labels={'color': 'Performance Score'},
+                        text_auto=True
+                    )
+                    fig.update_layout(
+                        xaxis_title="Experience Level",
+                        yaxis_title="Study Objectives"
+                    )
+                    st.plotly_chart(fig, use_container_width=True)
+                
+                # Individual metric analysis with different chart types
+                selected_metric = st.selectbox(
+                    "Select Study Objective for Detailed Analysis",
+                    list(metric_labels.keys()),
+                    format_func=lambda x: metric_labels[x],
+                    key="exp_metric_select"
+                )
+                
+                # Filter out rows with no data for the selected metric
+                plot_data = numeric_df.dropna(subset=[selected_metric])
+                
+                # Add experience labels to plot_data for better visualisation
+                plot_data['Experience_Numeric'] = pd.to_numeric(plot_data['Experience_Level'], errors='coerce')
+                plot_data['Experience_Label'] = plot_data['Experience_Numeric'].map(experience_labels)
+                plot_data['Experience_Label'] = plot_data['Experience_Label'].fillna(plot_data['Experience_Level'])
+                
+                if not plot_data.empty:
+                    # Line chart showing trend across experience levels
+                    avg_by_exp = plot_data.groupby('Experience_Label')[selected_metric].mean().reset_index()
+                    
+                    # Ensure proper ordering
+                    avg_by_exp['Experience_Label'] = pd.Categorical(avg_by_exp['Experience_Label'], categories=level_order, ordered=True)
+                    avg_by_exp = avg_by_exp.sort_values('Experience_Label')
+                    
+                    fig = px.line(
+                        avg_by_exp,
+                        x='Experience_Label',
+                        y=selected_metric,
+                        title=f"Performance Trend: {metric_labels[selected_metric]}",
+                        labels={
+                            'Experience_Label': 'Experience Level',
+                            selected_metric: metric_labels[selected_metric].split(':')[1].strip()
+                        },
+                        markers=True,
+                        line_shape='linear'
+                    )
+                    fig.update_traces(marker_size=12, line_width=4)
+                    st.plotly_chart(fig, use_container_width=True)
+                    
+                    # Comprehensive comparison across all objectives
+                    st.markdown("### Cross-Objective Performance Comparison")
+                    
+                    # Radar chart for selected experience levels
+                    experience_levels = plot_data['Experience_Label'].unique()
+                    if len(experience_levels) > 1:
+                        selected_levels = st.multiselect(
+                            "Select Experience Levels to Compare",
+                            sorted(experience_levels),
+                            default=sorted(experience_levels)[:2] if len(experience_levels) >= 2 else sorted(experience_levels),
+                            key="exp_levels_compare"
+                        )
+                        
+                        if selected_levels:
+                            # Create radar chart data
+                            radar_data = []
+                            for level in selected_levels:
+                                level_data = plot_data[plot_data['Experience_Label'] == level]
+                                if not level_data.empty:
+                                    radar_entry = {
+                                        'Experience_Level': level,
+                                        'Instrument_Efficiency': level_data['Instrument_Efficiency'].mean(),
+                                        'Task_Completion_Time': 1/level_data['Task_Completion_Time'].mean() if level_data['Task_Completion_Time'].mean() > 0 else 0,  # Inverted for radar (lower is better)
+                                        'Peripheral_Awareness': 1/level_data['Peripheral_Awareness'].mean() if level_data['Peripheral_Awareness'].mean() > 0 else 0,  # Inverted for radar (lower is better)
+                                        'Distraction_Management': 1/level_data['Distraction_Management'].mean() if level_data['Distraction_Management'].mean() > 0 else 0  # Inverted for radar (lower is better)
+                                    }
+                                    radar_data.append(radar_entry)
+                            
+                            if radar_data:
+                                # Create radar chart
+                                fig = go.Figure()
+                                
+                                categories = ['Instrument\nEfficiency', 'Task\nCompletion', 'Peripheral\nAwareness', 'Distraction\nManagement']
+                                
+                                for entry in radar_data:
+                                    values = [
+                                        entry['Instrument_Efficiency'],
+                                        entry['Task_Completion_Time'],
+                                        entry['Peripheral_Awareness'],
+                                        entry['Distraction_Management']
+                                    ]
+                                    # Close the radar chart
+                                    values += [values[0]]
+                                    categories_closed = categories + [categories[0]]
+                                    
+                                    fig.add_trace(go.Scatterpolar(
+                                        r=values,
+                                        theta=categories_closed,
+                                        fill='toself',
+                                        name=entry['Experience_Level'],
+                                        line_width=3
+                                    ))
+                                
+                                fig.update_layout(
+                                    title="Multi-Objective Performance Comparison by Experience Level<br><sub>Note: All metrics normalised for comparison (higher values = better performance)</sub>",
+                                    polar=dict(
+                                        radialaxis=dict(
+                                            visible=True,
+                                            range=[0, 1]
+                                        )
+                                    ),
+                                    height=500
+                                )
+                                
+                                st.plotly_chart(fig, use_container_width=True)
+                    
+                    # Correlation and Statistical Analysis
+                    st.markdown("### Statistical Correlation Analysis")
+                    
+                    # If we have numerical experience data, show correlation
+                    if not plot_data['Experience_Numeric'].isna().all():
+                        correlation = plot_data['Experience_Numeric'].corr(plot_data[selected_metric])
+                        
+                        col1, col2, col3 = st.columns(3)
+                        with col1:
+                            st.metric(
+                                f"Correlation Coefficient", 
+                                f"{correlation:.3f}" if not pd.isna(correlation) else "N/A"
+                            )
+                        
+                        with col2:
+                            # Interpretation
+                            if not pd.isna(correlation):
+                                if abs(correlation) > 0.7:
+                                    interpretation = "Strong"
+                                elif abs(correlation) > 0.3:
+                                    interpretation = "Moderate"
+                                else:
+                                    interpretation = "Weak"
+                                
+                                direction = "Positive" if correlation > 0 else "Negative"
+                                st.metric("Correlation Strength", f"{interpretation} {direction}")
+                        
+                        with col3:
+                            # Performance direction interpretation
+                            direction_meaning = ""
+                            if not pd.isna(correlation):
+                                if selected_metric in ['Instrument_Efficiency', 'Task_Completion_Time', 'Peripheral_Awareness']:
+                                    # Lower is better for these metrics
+                                    if correlation < 0:
+                                        direction_meaning = "✅ Improves with Experience"
+                                    else:
+                                        direction_meaning = "⚠️ Worsens with Experience"
+                                else:
+                                    # Higher is better for distraction management ratio
+                                    if correlation > 0:
+                                        direction_meaning = "✅ Improves with Experience"
+                                    else:
+                                        direction_meaning = "⚠️ Worsens with Experience"
+                            
+                            st.metric("Performance Trend", direction_meaning)
+                        
+                        # Scatter plot with trend line using numerical values but showing readable labels
+                        fig = px.scatter(
+                            plot_data,
+                            x='Experience_Numeric',
+                            y=selected_metric,
+                            hover_data=['Experience_Label', 'UUID'],
+                            title=f"Correlation Analysis: {metric_labels[selected_metric]} vs Experience",
+                            labels={
+                                'Experience_Numeric': 'Experience Level (Years)',
+                                selected_metric: metric_labels[selected_metric].split(':')[1].strip()
+                            },
+                            trendline="ols",
+                            trendline_color_override="red"
+                        )
+                        
+                        # Update x-axis to show readable labels
+                        fig.update_xaxes(
+                            tickmode='array',
+                            tickvals=[1, 2, 3, 4],
+                            ticktext=['1-5 years\n(Novice)', '6-10 years', '11-15 years', '15+ years\n(Expert)']
+                        )
+                        
+                        # Add correlation coefficient to the plot
+                        fig.add_annotation(
+                            x=0.02, y=0.98,
+                            xref="paper", yref="paper",
+                            text=f"Correlation: r = {correlation:.3f}",
+                            showarrow=False,
+                            font=dict(size=14, color="red"),
+                            bgcolor="rgba(255,255,255,0.8)",
+                            bordercolor="red",
+                            borderwidth=1
+                        )
+                        
+                        st.plotly_chart(fig, use_container_width=True)
+                        
+                        # Detailed breakdown by experience level
+                        st.markdown("### Detailed Performance Breakdown")
+                        
+                        experience_breakdown = plot_data.groupby('Experience_Label').agg({
+                            selected_metric: ['count', 'mean', 'min', 'max'],
+                            'UUID': 'count'
+                        }).round(2)
+                        
+                        # Flatten column names
+                        experience_breakdown.columns = [
+                            'Sample Count', 'Average', 'Minimum', 'Maximum', 'Participants'
+                        ]
+                        experience_breakdown = experience_breakdown.reset_index()
+                        experience_breakdown.columns = [
+                            'Experience Level', 'Sample Count', f'Average {metric_labels[selected_metric].split(":")[1].strip()}', 
+                            f'Best {metric_labels[selected_metric].split(":")[1].strip()}', 
+                            f'Worst {metric_labels[selected_metric].split(":")[1].strip()}', 'Participants'
+                        ]
+                        
+                        # Ensure proper ordering
+                        level_order = ['1-5 years (Novice)', '6-10 years', '11-15 years', '15+ years (Expert)']
+                        experience_breakdown['Experience Level'] = pd.Categorical(experience_breakdown['Experience Level'], categories=level_order, ordered=True)
+                        experience_breakdown = experience_breakdown.sort_values('Experience Level')
+                        
+                        st.dataframe(experience_breakdown, use_container_width=True)
+                else:
+                    st.warning(f"No data available for {metric_labels[selected_metric]}")
+                
+                # Download processed data
+                st.subheader("Export Experience Analysis Data")
+                
+                # Prepare comprehensive export data
+                export_df = performance_df.copy()
+                
+                # Add additional summary statistics
+                if st.button("Download Experience Analysis Data (CSV)"):
+                    csv_buffer = io.StringIO()
+                    export_df.to_csv(csv_buffer, index=False)
+                    csv_str = csv_buffer.getvalue()
+                    
+                    st.download_button(
+                        label="Download CSV",
+                        data=csv_str,
+                        file_name="surgeon_experience_analysis.csv",
+                        mime="text/csv"
+                    )
+            
+            else:
+                st.warning("No matching user data found for the provided UUIDs")
+        
+        else:
+            st.warning("""
+            No user performance data has been uploaded yet. Please upload user data on the 'Data Upload' page first.
+            
+            However, you can still view the experience data:
+            """)
+            
+            # Show basic experience data analysis
+            st.subheader("Experience Data Overview")
+            
+            # Create readable labels for experience levels
+            experience_labels = {
+                1: '1-5 years (Novice)',
+                2: '6-10 years', 
+                3: '11-15 years',
+                4: '15+ years (Expert)'
+            }
+            
+            # Convert experience to numerical and create labels
+            experience_df['Experience_Numeric'] = pd.to_numeric(experience_df['Experience'], errors='coerce')
+            experience_df['Experience_Label'] = experience_df['Experience_Numeric'].map(experience_labels)
+            experience_df['Experience_Label'] = experience_df['Experience_Label'].fillna(experience_df['Experience'])
+            
+            # Experience level distribution
+            exp_counts = experience_df['Experience_Label'].value_counts().reset_index()
+            exp_counts.columns = ['Experience Level', 'Count']
+            
+            # Ensure proper ordering
+            level_order = ['1-5 years (Novice)', '6-10 years', '11-15 years', '15+ years (Expert)']
+            exp_counts['Experience Level'] = pd.Categorical(exp_counts['Experience Level'], categories=level_order, ordered=True)
+            exp_counts = exp_counts.sort_values('Experience Level')
+            
+            fig = px.bar(
+                exp_counts,
+                x='Experience Level',
+                y='Count',
+                title='Distribution of Surgeon Experience Levels'
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Show full experience data
+            st.dataframe(experience_df)
+    
+    else:
+        st.info("Please upload a surgeon experience CSV file to begin the analysis.")
 
 # Export Report
 elif selected_page == "Export Report":
