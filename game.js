@@ -840,6 +840,27 @@ class VesselGame {
             this.ctx.strokeStyle = this.colours.distractor[distractor.type] || '#FF00FF';
             this.ctx.lineWidth = 2;
             this.ctx.stroke();
+
+            // Add label with background
+            const label = this.getDistractorLabel(distractor.type);
+            this.ctx.font = '14px Arial';
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            
+            // Draw label background
+            const textWidth = this.ctx.measureText(label).width;
+            const padding = 8;
+            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            this.ctx.fillRect(
+                distractor.x - textWidth/2 - padding,
+                distractor.y + size/2 + 5,
+                textWidth + padding * 2,
+                24
+            );
+            
+            // Draw label text
+            this.ctx.fillStyle = '#FFFFFF';
+            this.ctx.fillText(label, distractor.x, distractor.y + size/2 + 20);
         } else {
             // Fallback to original drawing if image not loaded
             this.ctx.beginPath();
@@ -875,6 +896,20 @@ class VesselGame {
             }
 
             this.ctx.fillText(symbol, distractor.x, distractor.y);
+        }
+    }
+
+    // Helper function to get distractor label
+    getDistractorLabel(type) {
+        switch (type) {
+            case 'blood_leak':
+                return 'Blood Leak';
+            case 'warning_alert':
+                return 'Warning Alert';
+            case 'instrument_request':
+                return 'Instrument Request';
+            default:
+                return 'Alert';
         }
     }
 
@@ -1423,6 +1458,9 @@ function acceptConsent() {
     // Show the game content
     document.getElementById('startScreen').classList.remove('hidden');
     document.getElementById('levelDisplay').classList.remove('hidden');
+    
+    // Smooth scroll to top of page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function declineConsent() {
@@ -1475,6 +1513,9 @@ function startNewGame() {
         return;
     }
 
+    // Hide the game over screen
+    document.getElementById('gameOver').classList.add('hidden');
+
     if (game) {
         game.cleanup();
     }
@@ -1491,4 +1532,93 @@ function nextLevel() {
 function navigateToFeedback() {
     // Navigate to the feedback page
     window.location.href = 'feedback.html';
+}
+
+// Tutorial handling
+let currentTutorialStep = 1;
+const totalTutorialSteps = 3;
+
+function showTutorial() {
+    document.getElementById('tutorialOverlay').classList.remove('hidden');
+    updateTutorialStep();
+}
+
+function updateTutorialStep() {
+    // Hide all steps
+    document.querySelectorAll('.tutorial-step').forEach(step => {
+        step.classList.add('hidden');
+    });
+    
+    // Show current step
+    document.querySelector(`.tutorial-step[data-step="${currentTutorialStep}"]`).classList.remove('hidden');
+    
+    // Update dots
+    document.querySelectorAll('.tutorial-dot').forEach(dot => {
+        dot.classList.remove('bg-green-500');
+        dot.classList.add('bg-gray-600');
+    });
+    document.querySelector(`.tutorial-dot[data-step="${currentTutorialStep}"]`).classList.remove('bg-gray-600');
+    document.querySelector(`.tutorial-dot[data-step="${currentTutorialStep}"]`).classList.add('bg-green-500');
+    
+    // Update buttons
+    const prevButton = document.getElementById('prevTutorialStep');
+    prevButton.textContent = currentTutorialStep === 1 ? 'Back to Home' : 'Previous';
+    prevButton.disabled = false;
+    
+    document.getElementById('nextTutorialStep').textContent = currentTutorialStep === totalTutorialSteps ? 'Start Game' : 'Next';
+}
+
+// Alert prompt handling
+function showAlertPrompt(message) {
+    const overlay = document.getElementById('alertPromptOverlay');
+    const content = document.getElementById('alertPromptContent');
+    content.textContent = message;
+    overlay.classList.remove('hidden');
+}
+
+// Event listeners for tutorial
+document.getElementById('prevTutorialStep').addEventListener('click', () => {
+    if (currentTutorialStep === 1) {
+        // Navigate to home screen
+        window.location.href = 'index.html';
+    } else {
+        currentTutorialStep--;
+        updateTutorialStep();
+    }
+});
+
+document.getElementById('nextTutorialStep').addEventListener('click', () => {
+    if (currentTutorialStep < totalTutorialSteps) {
+        currentTutorialStep++;
+        updateTutorialStep();
+    } else {
+        document.getElementById('tutorialOverlay').classList.add('hidden');
+        // Start the actual game
+        if (game) {
+            game.cleanup();
+        }
+        game = new VesselGame();
+        game.startGame();
+        
+        // Smooth scroll to game canvas
+        const gameCanvas = document.getElementById('gameCanvas');
+        gameCanvas.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+});
+
+document.getElementById('alertPromptClose').addEventListener('click', () => {
+    document.getElementById('alertPromptOverlay').classList.add('hidden');
+});
+
+// Add alert prompts for first-time events
+function showFirstTimeAlert(type) {
+    const alerts = {
+        'call': '📞 Incoming Call! Click to answer the call.',
+        'heart': '❤️ Heart Rate Alert! Click to acknowledge the warning.',
+        'voice': '🔊 Voice Command! Listen carefully to the instructions.'
+    };
+    
+    if (alerts[type]) {
+        showAlertPrompt(alerts[type]);
+    }
 }
