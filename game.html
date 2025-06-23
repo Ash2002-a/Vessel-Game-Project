@@ -430,7 +430,7 @@
                             <label><input type="radio" name="experience" value="4" required> 15+ years</label>
                         </div>
 
-                        <button type="submit">Continue</button>
+                        <button type="submit" id="submitExperience" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-200 w-full">Continue</button>
                     </form>
                 </div>
 
@@ -659,6 +659,11 @@
                 e.preventDefault();
                 const selectedExperience = document.querySelector('input[name="experience"]:checked');
                 if (selectedExperience) {
+                    // Disable button and show loading
+                    submitExperience.disabled = true;
+                    submitExperience.textContent = 'Submitting...';
+                    submitExperience.classList.add('opacity-60', 'cursor-not-allowed');
+
                     // Get the UUID
                     const uuid = getOrCreateUUID();
 
@@ -672,7 +677,7 @@
 
                     try {
                         // Send data to Google Apps Script
-                        const response = await fetch(GOOGLE_APPS_SCRIPT_URL_SURGEONS_INFO, {
+                        await fetch(GOOGLE_APPS_SCRIPT_URL_SURGEONS_INFO, {
                             method: "POST",
                             mode: "no-cors",
                             headers: {
@@ -685,11 +690,23 @@
                         });
 
                         console.log('Surgeon information submitted successfully');
-                        showStep(3);
+                        // Move to next step after a short delay
+                        setTimeout(() => {
+                            showStep(3);
+                            // Reset button for future use
+                            submitExperience.disabled = false;
+                            submitExperience.textContent = 'Continue';
+                            submitExperience.classList.remove('opacity-60', 'cursor-not-allowed');
+                        }, 800);
                     } catch (error) {
                         console.error('Error submitting surgeon information:', error);
                         // Still proceed to next step even if submission fails
-                        showStep(3);
+                        setTimeout(() => {
+                            showStep(3);
+                            submitExperience.disabled = false;
+                            submitExperience.textContent = 'Continue';
+                            submitExperience.classList.remove('opacity-60', 'cursor-not-allowed');
+                        }, 800);
                     }
                 }
             });
