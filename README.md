@@ -30,7 +30,6 @@ This project investigates the effects of limited field of view in keyhole surger
 
 ### Prerequisites
 - Python 3.8+
-- Node.js 14+
 - Visual Studio Code
 - Modern web browser with JavaScript enabled
 - Git
